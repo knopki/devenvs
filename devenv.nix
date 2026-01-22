@@ -1,0 +1,4 @@
+{ pkgs, ... }:
+{
+  env.GREET = "devenvs";
+}

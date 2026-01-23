@@ -19,7 +19,7 @@ in
       enable = mkEnableOption "Enable xmllint" // {
         default = true;
       };
-      package = mkPackageOption pkgs "libxml2" { };
+      package = mkPackageOption config.treefmt.config.programs.xmllint "package" { };
     };
 
     xmlstarlet = {
@@ -40,18 +40,15 @@ in
     };
 
     treefmt.config.programs = {
-      xmllint = {
-        enable = mkDefault cfg.xmllint.enable;
-        package = cfg.xmllint.package;
-      };
+      xmllint.enable = mkDefault cfg.xmllint.enable;
     };
 
     knopki.menu.commands = map (cmd: cmd // { category = "xml"; }) (
       optional cfg.xmllint.enable {
         name = "xmllint";
-        package = cfg.xmllint.package;
+        inherit (cfg.xmllint) package;
       }
-      ++ optional cfg.xmlstarlet.enable { package = cfg.xmlstarlet.package; }
+      ++ optional cfg.xmlstarlet.enable { inherit (cfg.xmlstarlet) package; }
     );
   };
 }

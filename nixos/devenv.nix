@@ -21,7 +21,5 @@ in
 
   imports = map (modulePath: import modulePath imports-args) [ ../modules/git.nix ];
 
-  env.GREET = mkDefault "NixOS devenv";
-
   knopki.git.enable = mkDefault true;
 }

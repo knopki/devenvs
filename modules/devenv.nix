@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib.lists) map;
 
@@ -10,6 +15,7 @@ in
   imports = map (modulePath: import modulePath imports-args) [
     ./git.nix
     ./json.nix
+    ./nix.nix
     ./toml.nix
     ./xml.nix
     ./yaml.nix

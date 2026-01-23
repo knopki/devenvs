@@ -29,7 +29,7 @@ in
 
     difftastic.enable = mkDefault true;
 
-    delta.enable = mkDefault true;
+    delta.enable = mkDefault (!config.difftastic.enable);
 
     git-hooks.hooks = {
       check-added-large-files.enable = mkDefault true;

@@ -21,6 +21,13 @@ in
       };
       package = mkPackageOption pkgs "nh" { };
     };
+
+    nix-inspect = {
+      enable = mkEnableOption "Enable nix-inspect tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "nix-inspect" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -32,11 +39,15 @@ in
       yaml.enable = mkDefault true;
     };
 
-    packages = optional cfg.nh.enable cfg.nh.package;
+    packages =
+      optional cfg.nh.enable cfg.nh.package ++ optional cfg.nix-inspect.enable cfg.nix-inspect.package;
 
     knopki.menu.commands = map (cmd: cmd // { category = "nixos"; }) (
       optional cfg.nh.enable {
         inherit (cfg.nh) package;
+      }
+      ++ optional cfg.nix-inspect.enable {
+        inherit (cfg.nix-inspect) package;
       }
     );
   };

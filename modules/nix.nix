@@ -26,10 +26,21 @@ in
       };
       package = mkPackageOption pkgs "nixfmt" { };
     };
+
+    flake-checker = {
+      enable = mkEnableOption "Enable flake-checker" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "flake-checker" { };
+    };
   };
 
   config = mkIf cfg.enable {
-    packages = [ cfg.package ] ++ optional cfg.nixfmt.enable cfg.nixfmt.package;
+    packages = [
+      cfg.package
+    ]
+    ++ optional cfg.nixfmt.enable cfg.nixfmt.package
+    ++ optional cfg.flake-checker.enable cfg.flake-checker.package;
 
     languages.nix = {
       enable = mkDefault true;
@@ -37,7 +48,14 @@ in
     };
 
     git-hooks.hooks = {
-      nixfmt-rfc-style.enable = mkDefault cfg.nixfmt.enable;
+      flake-checker = {
+        enable = mkDefault cfg.flake-checker.enable;
+        package = cfg.flake-checker.package;
+      };
+      nixfmt-rfc-style = {
+        enable = mkDefault cfg.nixfmt.enable;
+        package = cfg.nixfmt.package;
+      };
     };
 
     treefmt.config.programs = {

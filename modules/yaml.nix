@@ -37,12 +37,21 @@ in
 
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;
-      yamllint.enable = mkDefault cfg.yamllint.enable;
-      yamlfmt.enable = mkDefault cfg.yamlfmt.enable;
+      yamllint = {
+        enable = mkDefault cfg.yamllint.enable;
+        package = cfg.yamllint.package;
+      };
+      yamlfmt = {
+        enable = mkDefault cfg.yamlfmt.enable;
+        package = cfg.yamlfmt.package;
+      };
     };
 
     treefmt.config.programs = {
-      yamlfmt.enable = mkDefault cfg.yamlfmt.enable;
+      yamlfmt = {
+        enable = mkDefault cfg.yamlfmt.enable;
+        package = cfg.yamlfmt.package;
+      };
     };
   };
 }

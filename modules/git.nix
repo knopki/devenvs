@@ -25,10 +25,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = [
-      cfg.package
-    ]
-    ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    packages = [ cfg.package ] ++ optional cfg.lazygit.enable cfg.lazygit.package;
 
     difftastic.enable = mkDefault true;
 
@@ -56,5 +53,16 @@ in
       };
       pre-commit-hook-ensure-sops.enable = mkDefault true;
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "git"; }) (
+      [
+        {
+          package = pkgs.git;
+        }
+      ]
+      ++ optional cfg.lazygit.enable {
+        inherit (cfg.lazygit) package;
+      }
+    );
   };
 }

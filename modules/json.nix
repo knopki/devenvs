@@ -42,5 +42,23 @@ in
       deno.enable = mkDefault true;
       formatjson5.enable = mkDefault true;
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "json"; }) (
+      [
+        {
+          inherit (config.git-hooks.hooks.denofmt) package;
+          name = "deno fmt";
+        }
+        {
+          inherit (config.treefmt.config.programs.formatjson5) package;
+        }
+      ]
+      ++ optional cfg.jq.enable {
+        inherit (cfg.jq) package;
+      }
+      ++ optional cfg.fx.enable {
+        inherit (cfg.fx) package;
+      }
+    );
   };
 }

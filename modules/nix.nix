@@ -47,6 +47,13 @@ in
       };
       package = mkPackageOption config.git-hooks.hooks.statix "package" { };
     };
+
+    dix = {
+      enable = mkEnableOption "Enable dix diff tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "dix" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -56,7 +63,8 @@ in
     ++ optional cfg.nixfmt.enable cfg.nixfmt.package
     ++ optional cfg.flake-checker.enable cfg.flake-checker.package
     ++ optional cfg.deadnix.enable cfg.deadnix.package
-    ++ optional cfg.statix.enable cfg.statix.package;
+    ++ optional cfg.statix.enable cfg.statix.package
+    ++ optional cfg.dix.enable cfg.dix.package;
 
     languages.nix = {
       enable = mkDefault true;
@@ -93,6 +101,9 @@ in
       }
       ++ optional cfg.statix.enable {
         inherit (cfg.statix) package;
+      }
+      ++ optional cfg.dix.enable {
+        inherit (cfg.dix) package;
       }
       ++ optional config.languages.nix.lsp.enable {
         inherit (config.languages.nix.lsp) package;

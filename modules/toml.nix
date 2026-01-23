@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -19,7 +18,7 @@ in
       enable = mkEnableOption "Enable taplo" // {
         default = true;
       };
-      package = mkPackageOption pkgs "taplo" { };
+      package = mkPackageOption config.git-hooks.hooks.taplo "package" { };
     };
   };
 
@@ -28,22 +27,16 @@ in
 
     git-hooks.hooks = {
       check-toml.enable = mkDefault true;
-      taplo = {
-        enable = mkDefault cfg.taplo.enable;
-        package = cfg.taplo.package;
-      };
+      taplo.enable = mkDefault cfg.taplo.enable;
     };
 
     treefmt.config.programs = {
-      taplo = {
-        enable = mkDefault cfg.taplo.enable;
-        package = cfg.taplo.package;
-      };
+      taplo.enable = mkDefault cfg.taplo.enable;
     };
 
     knopki.menu.commands = optional cfg.taplo.enable {
       category = "toml";
-      package = cfg.taplo.package;
+      inherit (cfg.taplo) package;
     };
   };
 }

@@ -19,7 +19,9 @@ in
     ../modules/toml.nix
   ];
 
-  knopki.git.enable = mkDefault true;
-  knopki.json.enable = mkDefault true;
-  knopki.toml.enable = mkDefault true;
+  knopki = {
+    git.enable = mkDefault true;
+    json.enable = mkDefault true;
+    toml.enable = mkDefault true;
+  };
 }

@@ -61,7 +61,7 @@ in
         }
       ]
       ++ optional cfg.lazygit.enable {
-        package = cfg.lazygit.package;
+        inherit (cfg.lazygit) package;
       }
     );
   };

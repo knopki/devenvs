@@ -46,18 +46,18 @@ in
     knopki.menu.commands = map (cmd: cmd // { category = "json"; }) (
       [
         {
-          package = config.git-hooks.hooks.denofmt.package;
+          inherit (config.git-hooks.hooks.denofmt) package;
           name = "deno fmt";
         }
         {
-          package = config.treefmt.config.programs.formatjson5.package;
+          inherit (config.treefmt.config.programs.formatjson5) package;
         }
       ]
       ++ optional cfg.jq.enable {
-        package = cfg.jq.package;
+        inherit (cfg.jq) package;
       }
       ++ optional cfg.fx.enable {
-        package = cfg.fx.package;
+        inherit (cfg.fx) package;
       }
     );
   };

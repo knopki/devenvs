@@ -175,7 +175,7 @@ in
       }
     ]
     ++ optional config.git-hooks.enable {
-      package = config.git-hooks.package;
+      inherit (config.git-hooks) package;
     };
 
     scripts.menu.exec = mkDefault ''

@@ -25,10 +25,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = [
-      cfg.package
-    ]
-    ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    packages = [ cfg.package ] ++ optional cfg.lazygit.enable cfg.lazygit.package;
 
     difftastic.enable = mkDefault true;
 

@@ -40,7 +40,10 @@ in
     };
 
     treefmt.config.programs = {
-      xmllint.enable = mkDefault cfg.xmllint.enable;
+      xmllint = {
+        enable = mkDefault cfg.xmllint.enable;
+        package = cfg.xmllint.package;
+      };
     };
   };
 }

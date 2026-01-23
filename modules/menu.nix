@@ -71,7 +71,7 @@ let
     cmds:
     let
       cleanName =
-        { ... }@cmd:
+        cmd:
         assert lib.assertMsg (
           cmd.name != null || cmd.package != null
         ) "[[commands]]: some command is missing both a `name` or `package` attribute.";
@@ -97,9 +97,9 @@ let
 
       maxVersionLength = foldl' (max: v: if v > max then v else max) 0 versionLengths;
 
-      commandCategories = lib.unique (
-        (lib.zipAttrsWithNames [ "category" ] (_name: vs: vs) commands).category
-      );
+      commandCategories =
+        lib.unique
+          (lib.zipAttrsWithNames [ "category" ] (_name: vs: vs) commands).category;
 
       commandByCategoriesSorted = attrValues (
         lib.genAttrs commandCategories (

@@ -31,7 +31,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = optional cfg.jq.enable cfg.jq.package ++ optional cfg.fx.enable cfg.fx.package;
+    packages =
+      optional cfg.jq.enable cfg.jq.package
+      ++ optional cfg.fx.enable cfg.fx.package
+      ++ optional config.treefmt.enable config.treefmt.config.programs.formatjson5.package;
 
     git-hooks.hooks = {
       check-json.enable = mkDefault true;

@@ -8,4 +8,4 @@ inputs:
       nixpkgs:
         follows: nixpkgs
 imports:
-  - ./nix
+  - ./modules

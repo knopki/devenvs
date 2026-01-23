@@ -12,5 +12,6 @@ in
     ./json.nix
     ./toml.nix
     ./xml.nix
+    ./yaml.nix
   ];
 }

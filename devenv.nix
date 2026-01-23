@@ -1,11 +1,9 @@
 { ... }:
 {
-  knopki.git.enable = true;
-  knopki.xml.enable = true;
-  knopki.json.enable = true;
-  knopki.toml.enable = true;
-
   env.GREET = "devenvs";
+
+  knopki.git.enable = true;
+  knopki.yaml.enable = true;
 
   treefmt.enable = true;
 }

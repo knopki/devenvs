@@ -28,6 +28,13 @@ in
       };
       package = mkPackageOption pkgs "nix-inspect" { };
     };
+
+    nixos-anywhere = {
+      enable = mkEnableOption "Enable nixos-anywhere tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "nixos-anywhere" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -40,7 +47,9 @@ in
     };
 
     packages =
-      optional cfg.nh.enable cfg.nh.package ++ optional cfg.nix-inspect.enable cfg.nix-inspect.package;
+      optional cfg.nh.enable cfg.nh.package
+      ++ optional cfg.nix-inspect.enable cfg.nix-inspect.package
+      ++ optional cfg.nixos-anywhere.enable cfg.nixos-anywhere.package;
 
     knopki.menu.commands = map (cmd: cmd // { category = "nixos"; }) (
       optional cfg.nh.enable {
@@ -48,6 +57,9 @@ in
       }
       ++ optional cfg.nix-inspect.enable {
         inherit (cfg.nix-inspect) package;
+      }
+      ++ optional cfg.nixos-anywhere.enable {
+        inherit (cfg.nixos-anywhere) package;
       }
     );
   };

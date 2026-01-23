@@ -24,21 +24,28 @@ in
       enable = mkEnableOption "Enable nixfmt" // {
         default = true;
       };
-      package = mkPackageOption pkgs "nixfmt" { };
+      package = mkPackageOption config.git-hooks.hooks.nixfmt-rfc-style "package" { };
     };
 
     flake-checker = {
       enable = mkEnableOption "Enable flake-checker" // {
         default = true;
       };
-      package = mkPackageOption pkgs "flake-checker" { };
+      package = mkPackageOption config.git-hooks.hooks.flake-checker "package" { };
     };
 
     deadnix = {
       enable = mkEnableOption "Enable deadnix" // {
         default = true;
       };
-      package = mkPackageOption pkgs "deadnix" { };
+      package = mkPackageOption config.git-hooks.hooks.deadnix "package" { };
+    };
+
+    statix = {
+      enable = mkEnableOption "Enable statix" // {
+        default = true;
+      };
+      package = mkPackageOption config.git-hooks.hooks.statix "package" { };
     };
   };
 
@@ -48,7 +55,8 @@ in
     ]
     ++ optional cfg.nixfmt.enable cfg.nixfmt.package
     ++ optional cfg.flake-checker.enable cfg.flake-checker.package
-    ++ optional cfg.deadnix.enable cfg.deadnix.package;
+    ++ optional cfg.deadnix.enable cfg.deadnix.package
+    ++ optional cfg.statix.enable cfg.statix.package;
 
     languages.nix = {
       enable = mkDefault true;
@@ -56,29 +64,16 @@ in
     };
 
     git-hooks.hooks = {
-      deadnix = {
-        enable = mkDefault cfg.deadnix.enable;
-        package = cfg.deadnix.package;
-      };
-      flake-checker = {
-        enable = mkDefault cfg.flake-checker.enable;
-        package = cfg.flake-checker.package;
-      };
-      nixfmt-rfc-style = {
-        enable = mkDefault cfg.nixfmt.enable;
-        package = cfg.nixfmt.package;
-      };
+      deadnix.enable = mkDefault cfg.deadnix.enable;
+      flake-checker.enable = mkDefault cfg.flake-checker.enable;
+      nixfmt-rfc-style.enable = mkDefault cfg.nixfmt.enable;
+      statix.enable = mkDefault cfg.statix.enable;
     };
 
     treefmt.config.programs = {
-      deadnix = {
-        enable = mkDefault cfg.deadnix.enable;
-        package = cfg.deadnix.package;
-      };
-      nixfmt = {
-        enable = mkDefault cfg.nixfmt.enable;
-        package = cfg.nixfmt.package;
-      };
+      deadnix.enable = mkDefault cfg.deadnix.enable;
+      nixfmt.enable = mkDefault cfg.nixfmt.enable;
+      statix.enable = mkDefault cfg.statix.enable;
     };
 
     knopki.menu.commands = map (cmd: cmd // { category = "nix"; }) (
@@ -95,6 +90,9 @@ in
       }
       ++ optional cfg.deadnix.enable {
         package = cfg.deadnix.package;
+      }
+      ++ optional cfg.statix.enable {
+        package = cfg.statix.package;
       }
       ++ optional config.languages.nix.lsp.enable {
         package = config.languages.nix.lsp.package;

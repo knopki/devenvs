@@ -16,18 +16,24 @@ in
     enable = mkEnableOption "Enable xml support";
 
     xmllint = {
-      enable = mkEnableOption "Enable xmllint" // { default = true; };
-      package = mkPackageOption pkgs "libxml2" {};
+      enable = mkEnableOption "Enable xmllint" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "libxml2" { };
     };
 
     xmlstarlet = {
-      enable = mkEnableOption "Enable xmlstarlet" // { default = true; };
-      package = mkPackageOption pkgs "xmlstarlet" {};
+      enable = mkEnableOption "Enable xmlstarlet" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "xmlstarlet" { };
     };
   };
 
   config = mkIf cfg.enable {
-    packages = optional cfg.xmllint.enable cfg.xmllint.package ++ optional cfg.xmlstarlet.enable cfg.xmlstarlet.package;
+    packages =
+      optional cfg.xmllint.enable cfg.xmllint.package
+      ++ optional cfg.xmlstarlet.enable cfg.xmlstarlet.package;
 
     git-hooks.hooks = {
       check-xml.enable = mkDefault true;

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}:let
+}:
+let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
@@ -16,15 +17,18 @@ in
     package = mkPackageOption pkgs "git" { };
 
     lazygit = {
-      enable = mkEnableOption "Enable lazygit" // { default = true; };
-      package = mkPackageOption pkgs "lazygit" {};
+      enable = mkEnableOption "Enable lazygit" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "lazygit" { };
     };
   };
 
   config = mkIf cfg.enable {
     packages = [
       cfg.package
-    ] ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    ]
+    ++ optional cfg.lazygit.enable cfg.lazygit.package;
 
     difftastic.enable = mkDefault true;
 
@@ -45,7 +49,10 @@ in
       mixed-line-endings.enable = mkDefault true;
       no-commit-to-branch = {
         enable = mkDefault true;
-        settings.branch = mkDefault [ "master" "main" ];
+        settings.branch = mkDefault [
+          "master"
+          "main"
+        ];
       };
       pre-commit-hook-ensure-sops.enable = mkDefault true;
     };

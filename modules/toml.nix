@@ -16,8 +16,10 @@ in
     enable = mkEnableOption "Enable toml support";
 
     taplo = {
-      enable = mkEnableOption "Enable taplo" // { default = true; };
-      package = mkPackageOption pkgs "taplo" {};
+      enable = mkEnableOption "Enable taplo" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "taplo" { };
     };
   };
 

@@ -16,18 +16,24 @@ in
     enable = mkEnableOption "Enable yaml support";
 
     yamllint = {
-      enable = mkEnableOption "Enable yamllint" // { default = true; };
-      package = mkPackageOption pkgs "yamllint" {};
+      enable = mkEnableOption "Enable yamllint" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "yamllint" { };
     };
 
     yamlfmt = {
-      enable = mkEnableOption "Enable yamlfmt" // { default = true; };
-      package = mkPackageOption pkgs "yamlfmt" {};
+      enable = mkEnableOption "Enable yamlfmt" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "yamlfmt" { };
     };
   };
 
   config = mkIf cfg.enable {
-    packages = optional cfg.yamllint.enable cfg.yamllint.package ++ optional cfg.yamlfmt.enable cfg.yamlfmt.package;
+    packages =
+      optional cfg.yamllint.enable cfg.yamllint.package
+      ++ optional cfg.yamlfmt.enable cfg.yamlfmt.package;
 
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;

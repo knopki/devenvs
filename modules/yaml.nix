@@ -53,5 +53,10 @@ in
         package = cfg.yamlfmt.package;
       };
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "yaml"; }) (
+      optional cfg.yamlfmt.enable { package = cfg.yamlfmt.package; }
+      ++ optional cfg.yamllint.enable { package = cfg.yamllint.package; }
+    );
   };
 }

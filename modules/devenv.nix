@@ -1,23 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ lib, ... }:
 let
-  inherit (lib.lists) map;
-
-  imports-args = {
-    inherit config lib pkgs;
-  };
+  inherit (builtins) attrValues;
+  inherit (lib.modules) mkDefault;
+  myModules = import ./modules-list.nix;
 in
 {
-  imports = map (modulePath: import modulePath imports-args) [
-    ./git.nix
-    ./json.nix
-    ./nix.nix
-    ./toml.nix
-    ./xml.nix
-    ./yaml.nix
-  ];
+  imports = attrValues myModules;
+
+  devenv.warnOnNewVersion = mkDefault false;
 }

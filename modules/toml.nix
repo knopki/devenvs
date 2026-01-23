@@ -40,5 +40,10 @@ in
         package = cfg.taplo.package;
       };
     };
+
+    knopki.menu.commands = optional cfg.taplo.enable {
+      category = "toml";
+      package = cfg.taplo.package;
+    };
   };
 }

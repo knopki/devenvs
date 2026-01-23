@@ -80,5 +80,25 @@ in
         package = cfg.nixfmt.package;
       };
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "nix"; }) (
+      [
+        {
+          package = cfg.package;
+        }
+      ]
+      ++ optional cfg.nixfmt.enable {
+        package = cfg.nixfmt.package;
+      }
+      ++ optional cfg.flake-checker.enable {
+        package = cfg.flake-checker.package;
+      }
+      ++ optional cfg.deadnix.enable {
+        package = cfg.deadnix.package;
+      }
+      ++ optional config.languages.nix.lsp.enable {
+        package = config.languages.nix.lsp.package;
+      }
+    );
   };
 }

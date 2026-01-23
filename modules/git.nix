@@ -53,5 +53,16 @@ in
       };
       pre-commit-hook-ensure-sops.enable = mkDefault true;
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "git"; }) (
+      [
+        {
+          package = pkgs.git;
+        }
+      ]
+      ++ optional cfg.lazygit.enable {
+        package = cfg.lazygit.package;
+      }
+    );
   };
 }

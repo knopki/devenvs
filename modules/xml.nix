@@ -45,5 +45,13 @@ in
         package = cfg.xmllint.package;
       };
     };
+
+    knopki.menu.commands = map (cmd: cmd // { category = "xml"; }) (
+      optional cfg.xmllint.enable {
+        name = "xmllint";
+        package = cfg.xmllint.package;
+      }
+      ++ optional cfg.xmlstarlet.enable { package = cfg.xmlstarlet.package; }
+    );
   };
 }

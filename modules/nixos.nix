@@ -35,6 +35,13 @@ in
       };
       package = mkPackageOption pkgs "nixos-anywhere" { };
     };
+
+    nixos-build-vms = {
+      enable = mkEnableOption "Enable nixos-build-vms tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "nixos-build-vms" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -49,7 +56,8 @@ in
     packages =
       optional cfg.nh.enable cfg.nh.package
       ++ optional cfg.nix-inspect.enable cfg.nix-inspect.package
-      ++ optional cfg.nixos-anywhere.enable cfg.nixos-anywhere.package;
+      ++ optional cfg.nixos-anywhere.enable cfg.nixos-anywhere.package
+      ++ optional cfg.nixos-build-vms.enable cfg.nixos-build-vms.package;
 
     knopki.menu.commands = map (cmd: cmd // { category = "nixos"; }) (
       optional cfg.nh.enable {
@@ -60,6 +68,9 @@ in
       }
       ++ optional cfg.nixos-anywhere.enable {
         inherit (cfg.nixos-anywhere) package;
+      }
+      ++ optional cfg.nixos-build-vms.enable {
+        inherit (cfg.nixos-build-vms) package;
       }
     );
   };

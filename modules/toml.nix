@@ -26,11 +26,11 @@ in
 
     git-hooks.hooks = {
       check-toml.enable = mkDefault true;
-      taplo.enable = mkDefault true;
+      taplo.enable = mkDefault cfg.taplo.enable;
     };
 
     treefmt.config.programs = {
-      taplo.enable = mkDefault true;
+      taplo.enable = mkDefault cfg.taplo.enable;
     };
   };
 }

@@ -24,7 +24,6 @@ in
   config = mkIf cfg.enable {
     packages = [
       cfg.package
-      pkgs.commitizen
     ] ++ optional cfg.lazygit.enable cfg.lazygit.package;
 
     difftastic.enable = mkDefault true;

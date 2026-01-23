@@ -19,7 +19,11 @@ in
       enable = mkEnableOption "Enable xmllint" // {
         default = true;
       };
-      package = mkPackageOption config.treefmt.config.programs.xmllint "package" { };
+      package =
+        if config.treefmt.enable then
+          mkPackageOption config.treefmt.config.programs.xmllint "package" { }
+        else
+          mkPackageOption pkgs "libxml2";
     };
 
     xmlstarlet = {

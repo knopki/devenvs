@@ -49,15 +49,15 @@ in
           inherit (config.git-hooks.hooks.denofmt) package;
           name = "deno fmt";
         }
-        {
-          inherit (config.treefmt.config.programs.formatjson5) package;
-        }
       ]
       ++ optional cfg.jq.enable {
         inherit (cfg.jq) package;
       }
       ++ optional cfg.fx.enable {
         inherit (cfg.fx) package;
+      }
+      ++ optional config.treefmt.enable {
+        inherit (config.treefmt.config.programs.formatjson5) package;
       }
     );
   };

@@ -33,6 +33,13 @@ in
       };
       package = mkPackageOption pkgs "flake-checker" { };
     };
+
+    deadnix = {
+      enable = mkEnableOption "Enable deadnix" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "deadnix" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -40,7 +47,8 @@ in
       cfg.package
     ]
     ++ optional cfg.nixfmt.enable cfg.nixfmt.package
-    ++ optional cfg.flake-checker.enable cfg.flake-checker.package;
+    ++ optional cfg.flake-checker.enable cfg.flake-checker.package
+    ++ optional cfg.deadnix.enable cfg.deadnix.package;
 
     languages.nix = {
       enable = mkDefault true;
@@ -48,6 +56,10 @@ in
     };
 
     git-hooks.hooks = {
+      deadnix = {
+        enable = mkDefault cfg.deadnix.enable;
+        package = cfg.deadnix.package;
+      };
       flake-checker = {
         enable = mkDefault cfg.flake-checker.enable;
         package = cfg.flake-checker.package;
@@ -59,7 +71,14 @@ in
     };
 
     treefmt.config.programs = {
-      nixfmt.enable = mkDefault cfg.nixfmt.enable;
+      deadnix = {
+        enable = mkDefault cfg.deadnix.enable;
+        package = cfg.deadnix.package;
+      };
+      nixfmt = {
+        enable = mkDefault cfg.nixfmt.enable;
+        package = cfg.nixfmt.package;
+      };
     };
   };
 }

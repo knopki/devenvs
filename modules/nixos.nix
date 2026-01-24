@@ -61,10 +61,7 @@ in
   config = mkIf cfg.enable {
     knopki = {
       git.enable = mkDefault true;
-      json.enable = mkDefault true;
       nix.enable = mkDefault true;
-      toml.enable = mkDefault true;
-      yaml.enable = mkDefault true;
     };
 
     packages =

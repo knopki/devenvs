@@ -30,6 +30,7 @@ in
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;
       denofmt.enable = mkDefault true;
+      yamllint.enable = mkDefault cfg.yamllint.enable;
     };
 
     treefmt.config.programs = {

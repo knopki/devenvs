@@ -5,6 +5,7 @@
   menu = ./menu.nix;
   nix = ./nix.nix;
   nixos = ./nixos.nix;
+  security = ./security.nix;
   toml = ./toml.nix;
   xml = ./xml.nix;
   yaml = ./yaml.nix;

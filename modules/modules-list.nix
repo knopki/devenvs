@@ -1,4 +1,5 @@
 {
+  containers = ./containers.nix;
   git = ./git.nix;
   json = ./json.nix;
   markdown = ./markdown.nix;

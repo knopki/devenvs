@@ -111,7 +111,7 @@ in
         package = mkDefault cfg.checkov.package;
         pass_filenames = mkDefault false;
         entry = mkDefault ''
-          ${getExe cfg.checkov.package} --directory "${config.git.root}"
+          ${getExe cfg.checkov.package}
         '';
       };
       terraform-format = {

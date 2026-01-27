@@ -7,6 +7,7 @@
   menu = ./menu.nix;
   nix = ./nix.nix;
   nixos = ./nixos.nix;
+  secrets = ./secrets.nix;
   security = ./security.nix;
   toml = ./toml.nix;
   xml = ./xml.nix;

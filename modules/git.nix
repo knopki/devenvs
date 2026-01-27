@@ -43,6 +43,7 @@ in
       detect-private-keys.enable = mkDefault true;
       end-of-file-fixer.enable = mkDefault true;
       fix-byte-order-marker.enable = mkDefault true;
+      gitlint = mkDefault true;
       mixed-line-endings.enable = mkDefault true;
       no-commit-to-branch = {
         enable = mkDefault true;

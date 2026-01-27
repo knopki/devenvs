@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
@@ -9,6 +10,7 @@ let
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.security;
 in
@@ -37,10 +39,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.grype.enable cfg.grype.package
-      ++ optional cfg.syft.enable cfg.syft.package
-      ++ optional cfg.trivy.enable cfg.trivy.package;
+    packages = packagesFromConfigs [
+      cfg.grype
+      cfg.syft
+      cfg.trivy
+    ];
 
     git-hooks.hooks = {
       trivy-repository = {

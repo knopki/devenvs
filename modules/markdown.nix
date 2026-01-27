@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) concatMap optional;
+  inherit (lib.lists) optional;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.markdown;
 in
@@ -45,15 +47,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = concatMap (x: optional x.enable x.package) (
-      with cfg;
-      [
-        glow
-        lychee
-        marksman
-        markdownlint
-      ]
-    );
+    packages = packagesFromConfigs [
+      cfg.glow
+      cfg.lychee
+      cfg.marksman
+      cfg.markdownlint
+    ];
 
     git-hooks.hooks = {
       lychee.enable = mkDefault cfg.lychee.enable;

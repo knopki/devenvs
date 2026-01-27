@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
@@ -9,6 +10,7 @@ let
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.git;
 in
@@ -36,8 +38,10 @@ in
     packages = [
       cfg.package
     ]
-    ++ optional cfg.gitleaks.enable cfg.gitleaks.package
-    ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    ++ packagesFromConfigs [
+      cfg.gitleaks
+      cfg.lazygit
+    ];
 
     difftastic.enable = mkDefault true;
 

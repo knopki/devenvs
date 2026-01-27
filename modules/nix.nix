@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
-  inherit (lib.lists) concatMap optional;
+  inherit (lib.lists) optional;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.nix;
 in
@@ -57,19 +59,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = [
-      cfg.package
-    ]
-    ++ concatMap (x: optional x.enable x.package) (
-      with cfg;
-      [
-        nixfmt
-        flake-checker
-        deadnix
-        statix
-        dix
-      ]
-    );
+    packages = packagesFromConfigs [
+      cfg
+      cfg.nixfmt
+      cfg.flake-checker
+      cfg.deadnix
+      cfg.statix
+      cfg.dix
+    ];
 
     languages.nix = {
       enable = mkDefault true;

@@ -2,12 +2,17 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
+  inherit (myLib) packagesFromConfigs;
+
+  # myLib = import ./lib { inherit lib; };
+  # packagesFromConfigs = myLib;
 
   cfg = config.knopki.db;
 in
@@ -64,17 +69,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = map (x: optional x.enable x.package) (
-      with cfg;
-      [
-        sqlite
-        postgres
-        dblab
-        harlequin
-        lazysql
-        rainfrog
-      ]
-    );
+    packages = packagesFromConfigs [
+      cfg.sqlite
+      cfg.postgres
+      cfg.dblab
+      cfg.harlequin
+      cfg.lazysql
+      cfg.rainfrog
+    ];
 
     treefmt.config.programs = {
       sqruff.enable = mkDefault (cfg.sqlite.enable or cfg.postgres.enable);

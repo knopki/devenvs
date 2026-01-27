@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) concatMap optional;
+  inherit (lib.lists) optional;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.shell;
 in
@@ -38,14 +40,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = concatMap (x: optional x.enable x.package) (
-      with cfg;
-      [
-        ripgrep
-        shfmt
-        shellcheck
-      ]
-    );
+    packages = packagesFromConfigs [
+      cfg.ripgrep
+      cfg.shfmt
+      cfg.shellcheck
+    ];
 
     languages.shell = {
       enable = mkDefault true;

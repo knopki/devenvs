@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.xml;
 in
@@ -35,9 +37,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.xmllint.enable cfg.xmllint.package
-      ++ optional cfg.xmlstarlet.enable cfg.xmlstarlet.package;
+    packages = packagesFromConfigs [
+      cfg.xmllint
+      cfg.xmlstarlet
+    ];
 
     git-hooks.hooks = {
       check-xml.enable = mkDefault true;

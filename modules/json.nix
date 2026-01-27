@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.json;
 in
@@ -32,9 +34,11 @@ in
 
   config = mkIf cfg.enable {
     packages =
-      optional cfg.jq.enable cfg.jq.package
-      ++ optional cfg.fx.enable cfg.fx.package
-      ++ optional config.git-hooks.hooks.denofmt.enable config.git-hooks.hooks.denofmt.package
+      packagesFromConfigs [
+        cfg.jq
+        cfg.fx
+        config.git-hooks.hooks.denofmt
+      ]
       ++ optional config.treefmt.enable config.treefmt.config.programs.formatjson5.package;
 
     git-hooks.hooks = {

@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
+  inherit (myLib) packagesFromConfigs;
 
   cfg = config.knopki.nixos;
 in
@@ -67,11 +69,13 @@ in
     };
 
     packages =
-      optional cfg.nh.enable cfg.nh.package
-      ++ optional cfg.nix-inspect.enable cfg.nix-inspect.package
-      ++ optional cfg.nixos-anywhere.enable cfg.nixos-anywhere.package
-      ++ optional cfg.nixos-build-vms.enable cfg.nixos-build-vms.package
-      ++ optional cfg.nixos-rebuild.enable cfg.nixos-rebuild.package
+      packagesFromConfigs [
+        cfg.nh
+        cfg.nix-inspect
+        cfg.nixos-anywhere
+        cfg.nixos-build-vms
+        cfg.nixos-rebuild
+      ]
       ++ optional cfg.nixos-rebuild.enable cfg.nixos-install-tools.package;
 
     knopki.menu.commands = map (cmd: cmd // { category = "nixos"; }) (

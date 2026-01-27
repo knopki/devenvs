@@ -5,6 +5,8 @@ let
   myModules = import ./modules-list.nix;
 in
 {
+  _module.args.myLib = import ./lib.nix { inherit lib; };
+
   imports = attrValues myModules;
 
   devenv.warnOnNewVersion = mkDefault false;

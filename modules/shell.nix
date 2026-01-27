@@ -1,18 +1,26 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (lib.lists) concatMap optional;
 
   cfg = config.knopki.shell;
 in
 {
   options.knopki.shell = {
     enable = mkEnableOption "Enable shell support";
+
+    ripgrep = {
+      enable = mkEnableOption "Enable ripgrep tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "ripgrep" { };
+    };
 
     shellcheck = {
       enable = mkEnableOption "Enable shellcheck linter" // {
@@ -30,7 +38,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = optional cfg.shfmt.enable cfg.shfmt.package;
+    packages = concatMap (x: optional x.enable x.package) (
+      with cfg;
+      [
+        ripgrep
+        shfmt
+        shellcheck
+      ]
+    );
 
     languages.shell = {
       enable = mkDefault true;

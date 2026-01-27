@@ -51,7 +51,7 @@ in
         name = "Trivy repository audit";
         pass_filenames = false;
         entry = ''
-          ${getExe cfg.trivy.package} repository "${config.git.root}"
+          ${getExe cfg.trivy.package} repository .
         '';
       };
     };
@@ -61,9 +61,5 @@ in
       cfg.syft
       cfg.trivy
     ];
-
-    enterShell = ''
-      echo ${config.git.root}
-    '';
   };
 }

@@ -16,6 +16,13 @@ in
   options.knopki.shell = {
     enable = mkEnableOption "Enable shell support";
 
+    fd = {
+      enable = mkEnableOption "Enable fd tool" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "fd" { };
+    };
+
     ripgrep = {
       enable = mkEnableOption "Enable ripgrep tool" // {
         default = true;
@@ -40,6 +47,7 @@ in
 
   config = mkIf cfg.enable {
     packages = packagesFromConfigs [
+      cfg.fd
       cfg.ripgrep
       cfg.shfmt
       cfg.shellcheck
@@ -61,6 +69,8 @@ in
 
     knopki.menu.commands = commandsFromConfigs { category = "shell"; } [
       config.languages.shell.lsp
+      cfg.fd
+      cfg.ripgrep
       cfg.shellcheck
       cfg.shfmt
     ];

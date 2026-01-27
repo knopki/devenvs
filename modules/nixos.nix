@@ -63,6 +63,7 @@ in
       git.enable = mkDefault true;
       nix.enable = mkDefault true;
       secrets.sops.enable = mkDefault true;
+      shell.enable = mkDefault true;
     };
 
     packages =

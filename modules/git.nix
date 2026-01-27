@@ -2,13 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.git;
 in
@@ -36,8 +37,10 @@ in
     packages = [
       cfg.package
     ]
-    ++ optional cfg.gitleaks.enable cfg.gitleaks.package
-    ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    ++ packagesFromConfigs [
+      cfg.gitleaks
+      cfg.lazygit
+    ];
 
     difftastic.enable = mkDefault true;
 
@@ -77,18 +80,10 @@ in
       };
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "git"; }) (
-      [
-        {
-          package = pkgs.git;
-        }
-      ]
-      ++ optional cfg.gitleaks.enable {
-        inherit (cfg.gitleaks) package;
-      }
-      ++ optional cfg.lazygit.enable {
-        inherit (cfg.lazygit) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "git"; } [
+      cfg
+      cfg.gitleaks
+      cfg.lazygit
+    ];
   };
 }

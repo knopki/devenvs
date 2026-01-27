@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.markdown;
 in
@@ -45,11 +47,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.glow.enable cfg.glow.package
-      ++ optional cfg.lychee.enable cfg.lychee.package
-      ++ optional cfg.marksman.enable cfg.marksman.package
-      ++ optional cfg.markdownlint.enable cfg.markdownlint.package;
+    packages = packagesFromConfigs [
+      cfg.glow
+      cfg.lychee
+      cfg.marksman
+      cfg.markdownlint
+    ];
 
     git-hooks.hooks = {
       lychee.enable = mkDefault cfg.lychee.enable;
@@ -61,23 +64,17 @@ in
       deno.enable = mkDefault true;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "markdown"; }) (
-      optional config.git-hooks.hooks.denofmt.enable {
+    knopki.menu.commands =
+      commandsFromConfigs { category = "markdown"; } [
+        cfg.glow
+        cfg.lychee
+        cfg.marksman
+        cfg.markdownlint
+      ]
+      ++ optional config.git-hooks.hooks.denofmt.enable {
         inherit (config.git-hooks.hooks.denofmt) package;
         name = "deno fmt";
-      }
-      ++ optional cfg.glow.enable {
-        inherit (cfg.glow) package;
-      }
-      ++ optional cfg.lychee.enable {
-        inherit (cfg.lychee) package;
-      }
-      ++ optional cfg.marksman.enable {
-        inherit (cfg.marksman) package;
-      }
-      ++ optional cfg.markdownlint.enable {
-        inherit (cfg.markdownlint) package;
-      }
-    );
+        category = "markdown";
+      };
   };
 }

@@ -2,12 +2,13 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.nix;
 in
@@ -57,14 +58,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = [
-      cfg.package
-    ]
-    ++ optional cfg.nixfmt.enable cfg.nixfmt.package
-    ++ optional cfg.flake-checker.enable cfg.flake-checker.package
-    ++ optional cfg.deadnix.enable cfg.deadnix.package
-    ++ optional cfg.statix.enable cfg.statix.package
-    ++ optional cfg.dix.enable cfg.dix.package;
+    packages = packagesFromConfigs [
+      cfg
+      cfg.nixfmt
+      cfg.flake-checker
+      cfg.deadnix
+      cfg.statix
+      cfg.dix
+    ];
 
     languages.nix = {
       enable = mkDefault true;
@@ -84,30 +85,14 @@ in
       statix.enable = mkDefault cfg.statix.enable;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "nix"; }) (
-      [
-        {
-          inherit (cfg) package;
-        }
-      ]
-      ++ optional cfg.nixfmt.enable {
-        inherit (cfg.nixfmt) package;
-      }
-      ++ optional cfg.flake-checker.enable {
-        inherit (cfg.flake-checker) package;
-      }
-      ++ optional cfg.deadnix.enable {
-        inherit (cfg.deadnix) package;
-      }
-      ++ optional cfg.statix.enable {
-        inherit (cfg.statix) package;
-      }
-      ++ optional cfg.dix.enable {
-        inherit (cfg.dix) package;
-      }
-      ++ optional config.languages.nix.lsp.enable {
-        inherit (config.languages.nix.lsp) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "nix"; } [
+      cfg
+      cfg.nixfmt
+      cfg.flake-checker
+      cfg.deadnix
+      cfg.statix
+      cfg.dix
+      config.languages.nix.lsp
+    ];
   };
 }

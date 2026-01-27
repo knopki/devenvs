@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.json;
 in
@@ -32,9 +34,11 @@ in
 
   config = mkIf cfg.enable {
     packages =
-      optional cfg.jq.enable cfg.jq.package
-      ++ optional cfg.fx.enable cfg.fx.package
-      ++ optional config.git-hooks.hooks.denofmt.enable config.git-hooks.hooks.denofmt.package
+      packagesFromConfigs [
+        cfg.jq
+        cfg.fx
+        config.git-hooks.hooks.denofmt
+      ]
       ++ optional config.treefmt.enable config.treefmt.config.programs.formatjson5.package;
 
     git-hooks.hooks = {
@@ -47,20 +51,19 @@ in
       formatjson5.enable = mkDefault true;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "json"; }) (
+    knopki.menu.commands =
       optional config.git-hooks.hooks.denofmt.enable {
         inherit (config.git-hooks.hooks.denofmt) package;
         name = "deno fmt";
-      }
-      ++ optional cfg.jq.enable {
-        inherit (cfg.jq) package;
-      }
-      ++ optional cfg.fx.enable {
-        inherit (cfg.fx) package;
+        category = "json";
       }
       ++ optional config.treefmt.enable {
         inherit (config.treefmt.config.programs.formatjson5) package;
+        category = "json";
       }
-    );
+      ++ commandsFromConfigs { category = "json"; } [
+        cfg.jq
+        cfg.fx
+      ];
   };
 }

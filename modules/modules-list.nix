@@ -9,6 +9,7 @@
   nixos = ./nixos.nix;
   secrets = ./secrets.nix;
   security = ./security.nix;
+  shell = ./shell.nix;
   toml = ./toml.nix;
   xml = ./xml.nix;
   yaml = ./yaml.nix;

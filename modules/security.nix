@@ -2,13 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.security;
 in
@@ -37,10 +38,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.grype.enable cfg.grype.package
-      ++ optional cfg.syft.enable cfg.syft.package
-      ++ optional cfg.trivy.enable cfg.trivy.package;
+    packages = packagesFromConfigs [
+      cfg.grype
+      cfg.syft
+      cfg.trivy
+    ];
 
     git-hooks.hooks = {
       trivy-repository = {
@@ -54,17 +56,11 @@ in
       };
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "security"; }) (
-      optional cfg.grype.enable {
-        inherit (cfg.grype) package;
-      }
-      ++ optional cfg.syft.enable {
-        inherit (cfg.syft) package;
-      }
-      ++ optional cfg.trivy.enable {
-        inherit (cfg.trivy) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "security"; } [
+      cfg.grype
+      cfg.syft
+      cfg.trivy
+    ];
 
     enterShell = ''
       echo ${config.git.root}

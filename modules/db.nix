@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.db;
 in
@@ -64,27 +66,26 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.sqlite.enable cfg.sqlite.package
-      ++ optional cfg.postgres.enable cfg.postgres.package
-      ++ optional cfg.dblab.enable cfg.dblab.package
-      ++ optional cfg.harlequin.enable cfg.harlequin.package
-      ++ optional cfg.lazysql.enable cfg.lazysql.package
-      ++ optional cfg.rainfrog.enable cfg.rainfrog.package;
+    packages = packagesFromConfigs [
+      cfg.sqlite
+      cfg.postgres
+      cfg.dblab
+      cfg.harlequin
+      cfg.lazysql
+      cfg.rainfrog
+    ];
 
     treefmt.config.programs = {
       sqruff.enable = mkDefault (cfg.sqlite.enable or cfg.postgres.enable);
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "db"; }) (
-      optional cfg.sqlite.enable {
-        inherit (cfg.sqlite) package;
-      }
-      ++ optionals cfg.postgres.enable (
+    knopki.menu.commands =
+      optionals cfg.postgres.enable (
         map
           (name: {
             inherit name;
             inherit (cfg.postgres) package;
+            category = "db";
           })
           [
             "createdb"
@@ -96,20 +97,16 @@ in
             "pg_*"
           ]
       )
+      ++ commandsFromConfigs { category = "db"; } [
+        cfg.sqlite
+        cfg.harlequin
+        cfg.lazysql
+        cfg.rainfrog
+      ]
       ++ optional cfg.dblab.enable {
         inherit (cfg.dblab) package;
         name = "dblab";
-      }
-      ++ optional cfg.harlequin.enable {
-        inherit (cfg.harlequin) package;
-      }
-      ++ optional cfg.lazysql.enable {
-        inherit (cfg.lazysql) package;
-      }
-      ++ optional cfg.rainfrog.enable {
-        inherit (cfg.rainfrog) package;
-      }
-    );
+      };
 
     services.postgres = mkIf cfg.postgres.service.enable {
       enable = mkDefault true;

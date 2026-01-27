@@ -1,12 +1,13 @@
 {
   config,
   lib,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.toml;
 in
@@ -23,7 +24,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = optional cfg.taplo.enable cfg.taplo.package;
+    packages = packagesFromConfigs [ cfg.taplo ];
 
     git-hooks.hooks = {
       check-toml.enable = mkDefault true;
@@ -34,9 +35,6 @@ in
       taplo.enable = mkDefault cfg.taplo.enable;
     };
 
-    knopki.menu.commands = optional cfg.taplo.enable {
-      category = "toml";
-      inherit (cfg.taplo) package;
-    };
+    knopki.menu.commands = commandsFromConfigs { category = "toml"; } [ cfg.taplo ];
   };
 }

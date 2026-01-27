@@ -23,8 +23,13 @@ in
     };
 
     postgres = {
-      enable = mkEnableOption "Enable postgresql";
+      enable = mkEnableOption "Enable postgresql" // {
+        default = cfg.postgres.service.enable;
+      };
       package = mkPackageOption config.services.postgres "package" { };
+      service = {
+        enable = mkEnableOption "Enable postgresql service";
+      };
     };
 
     dblab = {
@@ -105,5 +110,19 @@ in
         inherit (cfg.rainfrog) package;
       }
     );
+
+    services.postgres = mkIf cfg.postgres.service.enable {
+      enable = mkDefault true;
+    };
+
+    tasks = {
+      "services:postgres:reset" = mkIf cfg.postgres.service.enable {
+        description = "Delete PostgreSQL data";
+        exec = ''
+          echo "Deleting PostgreSQL data in ''${PGDATA}"
+          [[ -e "''${PGDATA}" ]] && rm -r "''${PGDATA}"
+        '';
+      };
+    };
   };
 }

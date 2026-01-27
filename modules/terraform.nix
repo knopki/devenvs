@@ -21,15 +21,7 @@ in
 
   options.knopki.terraform = {
     enable = mkEnableOption "Enable terraform support" // {
-      default =
-        cfg.checkov.enable
-        || cfg.terragrunt.enable
-        || cfg.tfautomv.enable
-        || cfg.tflint.enable
-        || cfg.tf-summarize.enable
-        || cfg.terraform-docs.enable
-        || cfg.terraformer.enable
-        || cfg.terramate.enable;
+      default = cfg.terragrunt.enable || cfg.terramate.enable;
     };
 
     checkov = {
@@ -127,13 +119,13 @@ in
 
     treefmt.config.programs = {
       terraform = {
-        inherit (cfg) package;
+        # inherit (cfg) package;
         enable = mkDefault true;
       };
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "terraform"; } [
-      cfg
+      # cfg
       cfg.checkov
       cfg.tfautomv
       cfg.tflint

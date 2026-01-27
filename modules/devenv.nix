@@ -10,4 +10,9 @@ in
   imports = attrValues myModules;
 
   devenv.warnOnNewVersion = mkDefault false;
+
+  treefmt.config.settings.global.excludes = [
+    ".devenv"
+    ".direnv"
+  ];
 }

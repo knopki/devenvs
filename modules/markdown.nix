@@ -7,7 +7,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (lib.lists) concatMap optional;
 
   cfg = config.knopki.markdown;
 in
@@ -45,11 +45,15 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.glow.enable cfg.glow.package
-      ++ optional cfg.lychee.enable cfg.lychee.package
-      ++ optional cfg.marksman.enable cfg.marksman.package
-      ++ optional cfg.markdownlint.enable cfg.markdownlint.package;
+    packages = concatMap (x: optional x.enable x.package) (
+      with cfg;
+      [
+        glow
+        lychee
+        marksman
+        markdownlint
+      ]
+    );
 
     git-hooks.hooks = {
       lychee.enable = mkDefault cfg.lychee.enable;

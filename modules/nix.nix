@@ -7,7 +7,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (lib.lists) concatMap optional;
 
   cfg = config.knopki.nix;
 in
@@ -60,11 +60,16 @@ in
     packages = [
       cfg.package
     ]
-    ++ optional cfg.nixfmt.enable cfg.nixfmt.package
-    ++ optional cfg.flake-checker.enable cfg.flake-checker.package
-    ++ optional cfg.deadnix.enable cfg.deadnix.package
-    ++ optional cfg.statix.enable cfg.statix.package
-    ++ optional cfg.dix.enable cfg.dix.package;
+    ++ concatMap (x: optional x.enable x.package) (
+      with cfg;
+      [
+        nixfmt
+        flake-checker
+        deadnix
+        statix
+        dix
+      ]
+    );
 
     languages.nix = {
       enable = mkDefault true;

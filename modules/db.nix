@@ -64,13 +64,17 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.sqlite.enable cfg.sqlite.package
-      ++ optional cfg.postgres.enable cfg.postgres.package
-      ++ optional cfg.dblab.enable cfg.dblab.package
-      ++ optional cfg.harlequin.enable cfg.harlequin.package
-      ++ optional cfg.lazysql.enable cfg.lazysql.package
-      ++ optional cfg.rainfrog.enable cfg.rainfrog.package;
+    packages = map (x: optional x.enable x.package) (
+      with cfg;
+      [
+        sqlite
+        postgres
+        dblab
+        harlequin
+        lazysql
+        rainfrog
+      ]
+    );
 
     treefmt.config.programs = {
       sqruff.enable = mkDefault (cfg.sqlite.enable or cfg.postgres.enable);

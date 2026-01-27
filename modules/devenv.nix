@@ -12,7 +12,7 @@ in
   devenv.warnOnNewVersion = mkDefault false;
 
   treefmt.config.settings.global.excludes = [
-    ".devenv"
-    ".direnv"
+    ".devenv/*"
+    ".direnv/*"
   ];
 }

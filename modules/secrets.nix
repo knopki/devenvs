@@ -15,7 +15,7 @@ in
 {
   options.knopki.secrets = {
     enable = mkEnableOption "Enable secret management tools" // {
-      default = cfg.age.enable || cfg.libsecret.enable || cfg.sops.enable;
+      default = cfg.age.enable || cfg.sops.enable;
     };
 
     age = {

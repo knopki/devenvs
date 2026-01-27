@@ -1,5 +1,6 @@
 {
   containers = ./containers.nix;
+  db = ./db.nix;
   git = ./git.nix;
   json = ./json.nix;
   markdown = ./markdown.nix;

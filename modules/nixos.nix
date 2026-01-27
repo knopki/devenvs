@@ -99,5 +99,12 @@ in
             "nixos-install"
           ]
       );
+
+    # do not format keys
+    treefmt.config.settings.global.excludes = [
+      "*.asc"
+      ".sops.yaml"
+      "secrets/*.yaml"
+    ];
   };
 }

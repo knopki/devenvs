@@ -8,6 +8,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (lib.meta) getExe;
 
   cfg = config.knopki.git;
 in
@@ -15,6 +16,13 @@ in
   options.knopki.git = {
     enable = mkEnableOption "Enable Git";
     package = mkPackageOption pkgs "git" { };
+
+    gitleaks = {
+      enable = mkEnableOption "Enable gitleaks" // {
+        default = true;
+      };
+      package = mkPackageOption pkgs "gitleaks" { };
+    };
 
     lazygit = {
       enable = mkEnableOption "Enable lazygit" // {
@@ -25,7 +33,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = [ cfg.package ] ++ optional cfg.lazygit.enable cfg.lazygit.package;
+    packages = [
+      cfg.package
+    ]
+    ++ optional cfg.gitleaks.enable cfg.gitleaks.package
+    ++ optional cfg.lazygit.enable cfg.lazygit.package;
 
     difftastic.enable = mkDefault true;
 
@@ -53,6 +65,16 @@ in
         ];
       };
       pre-commit-hook-ensure-sops.enable = mkDefault true;
+      gitleaks = mkIf cfg.gitleaks.enable {
+        inherit (cfg.gitleaks) package;
+        enable = mkDefault true;
+        pass_filenames = false;
+        entry = "${getExe cfg.gitleaks.package} git";
+        args = [
+          "--staged"
+          "--redact"
+        ];
+      };
     };
 
     knopki.menu.commands = map (cmd: cmd // { category = "git"; }) (
@@ -61,6 +83,9 @@ in
           package = pkgs.git;
         }
       ]
+      ++ optional cfg.gitleaks.enable {
+        inherit (cfg.gitleaks) package;
+      }
       ++ optional cfg.lazygit.enable {
         inherit (cfg.lazygit) package;
       }

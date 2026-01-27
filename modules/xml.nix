@@ -9,7 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.xml;
 in
@@ -50,12 +50,12 @@ in
       xmllint.enable = mkDefault cfg.xmllint.enable;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "xml"; }) (
+    knopki.menu.commands =
       optional cfg.xmllint.enable {
-        name = "xmllint";
         inherit (cfg.xmllint) package;
+        name = "xmllint";
+        category = "xml";
       }
-      ++ optional cfg.xmlstarlet.enable { inherit (cfg.xmlstarlet) package; }
-    );
+      ++ commandsFromConfigs { category = "xml"; } [ cfg.xmlstarlet ];
   };
 }

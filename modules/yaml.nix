@@ -1,12 +1,14 @@
 {
   config,
   lib,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.yaml;
 in
@@ -23,9 +25,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.yamllint.enable cfg.yamllint.package
-      ++ optional config.git-hooks.hooks.denofmt.enable config.git-hooks.hooks.denofmt.package;
+    packages = packagesFromConfigs [
+      cfg.yamllint
+      config.git-hooks.hooks.denofmt
+    ];
 
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;
@@ -37,12 +40,14 @@ in
       deno.enable = mkDefault true;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "yaml"; }) (
+    knopki.menu.commands =
       optional config.git-hooks.hooks.denofmt.enable {
         inherit (config.git-hooks.hooks.denofmt) package;
         name = "deno fmt";
+        category = "yaml";
       }
-      ++ optional cfg.yamllint.enable { inherit (cfg.yamllint) package; }
-    );
+      ++ commandsFromConfigs { category = "yaml"; } [
+        cfg.yamllint
+      ];
   };
 }

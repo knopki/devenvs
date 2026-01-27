@@ -8,9 +8,8 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.git;
 in
@@ -81,18 +80,10 @@ in
       };
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "git"; }) (
-      [
-        {
-          package = pkgs.git;
-        }
-      ]
-      ++ optional cfg.gitleaks.enable {
-        inherit (cfg.gitleaks) package;
-      }
-      ++ optional cfg.lazygit.enable {
-        inherit (cfg.lazygit) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "git"; } [
+      cfg
+      cfg.gitleaks
+      cfg.lazygit
+    ];
   };
 }

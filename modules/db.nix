@@ -9,10 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
-  inherit (myLib) packagesFromConfigs;
-
-  # myLib = import ./lib { inherit lib; };
-  # packagesFromConfigs = myLib;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.db;
 in
@@ -82,15 +79,13 @@ in
       sqruff.enable = mkDefault (cfg.sqlite.enable or cfg.postgres.enable);
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "db"; }) (
-      optional cfg.sqlite.enable {
-        inherit (cfg.sqlite) package;
-      }
-      ++ optionals cfg.postgres.enable (
+    knopki.menu.commands =
+      optionals cfg.postgres.enable (
         map
           (name: {
             inherit name;
             inherit (cfg.postgres) package;
+            category = "db";
           })
           [
             "createdb"
@@ -102,20 +97,16 @@ in
             "pg_*"
           ]
       )
+      ++ commandsFromConfigs { category = "db"; } [
+        cfg.sqlite
+        cfg.harlequin
+        cfg.lazysql
+        cfg.rainfrog
+      ]
       ++ optional cfg.dblab.enable {
         inherit (cfg.dblab) package;
         name = "dblab";
-      }
-      ++ optional cfg.harlequin.enable {
-        inherit (cfg.harlequin) package;
-      }
-      ++ optional cfg.lazysql.enable {
-        inherit (cfg.lazysql) package;
-      }
-      ++ optional cfg.rainfrog.enable {
-        inherit (cfg.rainfrog) package;
-      }
-    );
+      };
 
     services.postgres = mkIf cfg.postgres.service.enable {
       enable = mkDefault true;

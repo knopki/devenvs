@@ -8,8 +8,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.shell;
 in
@@ -60,16 +59,10 @@ in
       shfmt.enable = mkDefault cfg.shfmt.enable;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "shell"; }) (
-      optional config.languages.shell.lsp.enable {
-        inherit (config.languages.shell.lsp) package;
-      }
-      ++ optional cfg.shellcheck.enable {
-        inherit (cfg.shellcheck) package;
-      }
-      ++ optional cfg.shfmt.enable {
-        inherit (cfg.shfmt) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "shell"; } [
+      config.languages.shell.lsp
+      cfg.shellcheck
+      cfg.shfmt
+    ];
   };
 }

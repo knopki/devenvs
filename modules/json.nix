@@ -9,7 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.json;
 in
@@ -51,20 +51,19 @@ in
       formatjson5.enable = mkDefault true;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "json"; }) (
+    knopki.menu.commands =
       optional config.git-hooks.hooks.denofmt.enable {
         inherit (config.git-hooks.hooks.denofmt) package;
         name = "deno fmt";
-      }
-      ++ optional cfg.jq.enable {
-        inherit (cfg.jq) package;
-      }
-      ++ optional cfg.fx.enable {
-        inherit (cfg.fx) package;
+        category = "json";
       }
       ++ optional config.treefmt.enable {
         inherit (config.treefmt.config.programs.formatjson5) package;
+        category = "json";
       }
-    );
+      ++ commandsFromConfigs { category = "json"; } [
+        cfg.jq
+        cfg.fx
+      ];
   };
 }

@@ -8,8 +8,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.secrets;
 in
@@ -50,16 +49,10 @@ in
       pre-commit-hook-ensure-sops = mkDefault cfg.sops.enable;
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "secrets"; }) (
-      optional cfg.age.enable {
-        inherit (cfg.age) package;
-      }
-      ++ optional cfg.libsecret.enable {
-        inherit (cfg.libsecret) package;
-      }
-      ++ optional cfg.sops.enable {
-        inherit (cfg.sops) package;
-      }
-    );
+    knopki.menu.commands = commandsFromConfigs { category = "secrets"; } [
+      cfg.age
+      cfg.libsecret
+      cfg.sops
+    ];
   };
 }

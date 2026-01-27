@@ -9,7 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
-  inherit (myLib) packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.nixos;
 in
@@ -78,34 +78,26 @@ in
       ]
       ++ optional cfg.nixos-rebuild.enable cfg.nixos-install-tools.package;
 
-    knopki.menu.commands = map (cmd: cmd // { category = "nixos"; }) (
-      optional cfg.nh.enable {
-        inherit (cfg.nh) package;
-      }
-      ++ optional cfg.nix-inspect.enable {
-        inherit (cfg.nix-inspect) package;
-      }
-      ++ optional cfg.nixos-anywhere.enable {
-        inherit (cfg.nixos-anywhere) package;
-      }
-      ++ optional cfg.nixos-build-vms.enable {
-        inherit (cfg.nixos-build-vms) package;
-      }
-      ++ optional cfg.nixos-rebuild.enable {
-        inherit (cfg.nixos-rebuild) package;
-      }
+    knopki.menu.commands =
+      commandsFromConfigs { category = "nixos"; } [
+        cfg.nh
+        cfg.nix-inspect
+        cfg.nixos-anywhere
+        cfg.nixos-build-vms
+        cfg.nixos-rebuild
+      ]
       ++ optionals cfg.nixos-install-tools.enable (
         map
           (name: {
             inherit name;
             inherit (cfg.nixos-install-tools) package;
+            category = "nixos";
           })
           [
             "nixos-enter"
             "nixos-generate-config"
             "nixos-install"
           ]
-      )
-    );
+      );
   };
 }

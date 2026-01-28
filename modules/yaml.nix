@@ -33,7 +33,14 @@ in
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;
       denofmt.enable = mkDefault true;
-      yamllint.enable = mkDefault cfg.yamllint.enable;
+      yamllint = {
+        enable = mkDefault cfg.yamllint.enable;
+        settings.configuration = mkDefault ''
+          rules:
+            comments:
+              min-spaces-from-content: 1
+        '';
+      };
     };
 
     treefmt.config.programs = {

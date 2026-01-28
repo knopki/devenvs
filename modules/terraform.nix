@@ -95,7 +95,7 @@ in
       lsp.enable = mkDefault true;
     };
 
-    env.TERRAFORM_BINARY_NAME = mkIf config.languages.opentofu (
+    env.TERRAFORM_BINARY_NAME = mkIf config.languages.opentofu.enable (
       getExe config.languages.opentofu.package
     );
 

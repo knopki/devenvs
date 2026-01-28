@@ -8,6 +8,7 @@
 let
   inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
@@ -124,16 +125,21 @@ in
       };
     };
 
-    knopki.menu.commands = commandsFromConfigs { category = "terraform"; } [
-      cfg
-      cfg.checkov
-      cfg.tfautomv
-      cfg.tflint
-      cfg.tf-summarize
-      cfg.terraform-docs
-      cfg.terraformer
-      cfg.terragrunt
-      cfg.terramate
-    ];
+    knopki.menu.commands =
+      commandsFromConfigs { category = "terraform"; } [
+        cfg
+        cfg.checkov
+        cfg.tfautomv
+        cfg.tflint
+        cfg.tf-summarize
+        cfg.terraform-docs
+        cfg.terraformer
+        cfg.terragrunt
+      ]
+      ++ optional cfg.terramate.enable {
+        inherit (cfg.terramate) package;
+        name = "terramate";
+        category = "terraform";
+      };
   };
 }

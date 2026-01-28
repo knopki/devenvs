@@ -16,7 +16,7 @@ in
 {
   imports = [
     (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "package" ])
-    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "version" ])
+    (mkAliasOptionModule [ "knopki" "terraform" "version" ] [ "languages" "terraform" "version" ])
   ];
 
   options.knopki.terraform = {

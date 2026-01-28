@@ -15,7 +15,8 @@ let
 in
 {
   imports = [
-    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "opentofu" "package" ])
+    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "package" ])
+    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "version" ])
   ];
 
   options.knopki.terraform = {
@@ -90,14 +91,10 @@ in
       cfg.terramate
     ];
 
-    languages.opentofu = {
+    languages.terraform = {
       enable = mkDefault true;
       lsp.enable = mkDefault true;
     };
-
-    env.TERRAFORM_BINARY_NAME = mkIf config.languages.opentofu.enable (
-      getExe config.languages.opentofu.package
-    );
 
     git-hooks.hooks = {
       checkov = {
@@ -122,13 +119,13 @@ in
 
     treefmt.config.programs = {
       terraform = {
-        # inherit (cfg) package;
+        inherit (cfg) package;
         enable = mkDefault true;
       };
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "terraform"; } [
-      # cfg
+      cfg
       cfg.checkov
       cfg.tfautomv
       cfg.tflint

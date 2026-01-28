@@ -15,8 +15,7 @@ let
 in
 {
   imports = [
-    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "package" ])
-    (mkAliasOptionModule [ "knopki" "terraform" "version" ] [ "languages" "terraform" "version" ])
+    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "opentofu" "package" ])
   ];
 
   options.knopki.terraform = {
@@ -91,10 +90,14 @@ in
       cfg.terramate
     ];
 
-    languages.terraform = {
+    languages.opentofu = {
       enable = mkDefault true;
       lsp.enable = mkDefault true;
     };
+
+    env.TERRAFORM_BINARY_NAME = mkIf config.languages.opentofu (
+      getExe config.languages.opentofu.package
+    );
 
     git-hooks.hooks = {
       checkov = {

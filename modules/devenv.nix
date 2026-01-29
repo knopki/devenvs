@@ -13,7 +13,7 @@ in
 
   git-hooks.excludes = [
     "^.devenv\..*/"
-    "^.git/*"
+    "^.git/"
   ];
 
   treefmt.config.settings.global.excludes = [

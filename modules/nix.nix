@@ -29,30 +29,22 @@ in
     };
 
     flake-checker = {
-      enable = mkEnableOption "Enable flake-checker" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable flake-checker";
       package = mkPackageOption config.git-hooks.hooks.flake-checker "package" { };
     };
 
     deadnix = {
-      enable = mkEnableOption "Enable deadnix" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable deadnix";
       package = mkPackageOption config.git-hooks.hooks.deadnix "package" { };
     };
 
     statix = {
-      enable = mkEnableOption "Enable statix" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable statix";
       package = mkPackageOption config.git-hooks.hooks.statix "package" { };
     };
 
     dix = {
-      enable = mkEnableOption "Enable dix diff tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable dix diff tool";
       package = mkPackageOption pkgs "dix" { };
     };
   };

@@ -26,44 +26,32 @@ in
     };
 
     checkov = {
-      enable = mkEnableOption "Enable checkov linter" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable checkov linter";
       package = mkPackageOption pkgs "checkov" { };
     };
 
     tf-summarize = {
-      enable = mkEnableOption "Enable tf-summarize" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable tf-summarize";
       package = mkPackageOption pkgs "tf-summarize" { };
     };
 
     tfautomv = {
-      enable = mkEnableOption "Enable tfautomv" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable tfautomv";
       package = mkPackageOption pkgs "tfautomv" { };
     };
 
     tflint = {
-      enable = mkEnableOption "Enable tflint linter" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable tflint linter";
       package = mkPackageOption pkgs "tflint" { };
     };
 
     terraform-docs = {
-      enable = mkEnableOption "Enable terraform-docs" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable terraform-docs";
       package = mkPackageOption pkgs "terraform-docs" { };
     };
 
     terraformer = {
-      enable = mkEnableOption "Enable terraformer" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable terraformer";
       package = mkPackageOption pkgs "terraformer" { };
     };
 
@@ -76,7 +64,6 @@ in
       enable = mkEnableOption "Enable terramate";
       package = mkPackageOption pkgs "terramate" { };
     };
-
   };
 
   config = mkIf cfg.enable {

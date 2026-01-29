@@ -19,16 +19,12 @@ in
     package = mkPackageOption pkgs "git" { };
 
     gitleaks = {
-      enable = mkEnableOption "Enable gitleaks" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable gitleaks";
       package = mkPackageOption pkgs "gitleaks" { };
     };
 
     lazygit = {
-      enable = mkEnableOption "Enable lazygit" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable lazygit";
       package = mkPackageOption pkgs "lazygit" { };
     };
   };

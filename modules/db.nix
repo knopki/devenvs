@@ -35,32 +35,22 @@ in
     };
 
     dblab = {
-      enable = mkEnableOption "Enable dblab database client" // {
-        default = cfg.sqlite.enable || cfg.postgres.enable;
-      };
+      enable = mkEnableOption "Enable dblab database client";
       package = mkPackageOption pkgs "dblab" { };
     };
 
     harlequin = {
-      enable = mkEnableOption "Enable harlequin database IDE" // {
-        default = cfg.sqlite.enable || (cfg.postgres.enable && (!cfg.rainfrog.enable));
-      };
+      enable = mkEnableOption "Enable harlequin database IDE";
       package = mkPackageOption pkgs "harlequin" { };
     };
 
     lazysql = {
-      enable = mkEnableOption "Enable lazysql database client" // {
-        default =
-          (cfg.sqlite.enable || cfg.postgres.enable)
-          && (!cfg.harlequin.enable || (!cfg.rainfrog.enable) || (!cfg.dblab.enable));
-      };
+      enable = mkEnableOption "Enable lazysql database client";
       package = mkPackageOption pkgs "lazysql" { };
     };
 
     rainfrog = {
-      enable = mkEnableOption "Enable rainfrog postgres client" // {
-        default = cfg.postgres.enable;
-      };
+      enable = mkEnableOption "Enable rainfrog postgres client";
       package = mkPackageOption pkgs "rainfrog" { };
     };
   };

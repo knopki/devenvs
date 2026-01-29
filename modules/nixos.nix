@@ -18,44 +18,32 @@ in
     enable = mkEnableOption "Enable NixOS tools";
 
     nh = {
-      enable = mkEnableOption "Enable nh tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nh tool";
       package = mkPackageOption pkgs "nh" { };
     };
 
     nix-inspect = {
-      enable = mkEnableOption "Enable nix-inspect tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nix-inspect tool";
       package = mkPackageOption pkgs "nix-inspect" { };
     };
 
     nixos-anywhere = {
-      enable = mkEnableOption "Enable nixos-anywhere tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nixos-anywhere tool";
       package = mkPackageOption pkgs "nixos-anywhere" { };
     };
 
     nixos-build-vms = {
-      enable = mkEnableOption "Enable nixos-build-vms tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nixos-build-vms tool";
       package = mkPackageOption pkgs "nixos-build-vms" { };
     };
 
     nixos-rebuild = {
-      enable = mkEnableOption "Enable nixos-rebuild tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nixos-rebuild tool";
       package = mkPackageOption pkgs "nixos-rebuild-ng" { };
     };
 
     nixos-install-tools = {
-      enable = mkEnableOption "Enable nixos install tools" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable nixos install tools";
       package = mkPackageOption pkgs "nixos-install-tools" { };
     };
   };

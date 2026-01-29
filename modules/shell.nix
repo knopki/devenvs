@@ -17,30 +17,22 @@ in
     enable = mkEnableOption "Enable shell support";
 
     fd = {
-      enable = mkEnableOption "Enable fd tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable fd tool";
       package = mkPackageOption pkgs "fd" { };
     };
 
     ripgrep = {
-      enable = mkEnableOption "Enable ripgrep tool" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable ripgrep tool";
       package = mkPackageOption pkgs "ripgrep" { };
     };
 
     shellcheck = {
-      enable = mkEnableOption "Enable shellcheck linter" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable shellcheck linter";
       package = mkPackageOption config.git-hooks.hooks.shellcheck "package" { };
     };
 
     shfmt = {
-      enable = mkEnableOption "Enable shfmt formatting" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable shfmt formatting";
       package = mkPackageOption config.git-hooks.hooks.shfmt "package" { };
     };
   };

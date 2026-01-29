@@ -16,16 +16,12 @@ in
     enable = mkEnableOption "Enable containers tools";
 
     hadolint = {
-      enable = mkEnableOption "Enable hadolint Dockerfile linter" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable hadolint Dockerfile linter";
       package = mkPackageOption config.git-hooks.hooks.hadolint "package" { };
     };
 
     lazydocker = {
-      enable = mkEnableOption "Enable lazydocker" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable lazydocker";
       package = mkPackageOption pkgs "lazydocker" { };
     };
   };

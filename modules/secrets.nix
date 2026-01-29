@@ -26,9 +26,7 @@ in
     };
 
     libsecret = {
-      enable = mkEnableOption "Enable libsecret tools (Linux)" // {
-        default = pkgs.stdenv.isLinux;
-      };
+      enable = mkEnableOption "Enable libsecret tools (Linux)";
       package = mkPackageOption pkgs "libsecret" { };
     };
 

@@ -11,8 +11,13 @@ in
 
   devenv.warnOnNewVersion = mkDefault false;
 
+  git-hooks.excludes = [
+    "^.devenv\..*/"
+  ];
+
   treefmt.config.settings.global.excludes = [
     ".devenv/*"
+    ".devenv.*/*"
     ".direnv/*"
   ];
 }

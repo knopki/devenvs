@@ -105,10 +105,19 @@ in
       tflint.enable = mkDefault cfg.tflint.enable;
     };
 
-    treefmt.config.programs = {
-      terraform = {
-        inherit (cfg) package;
-        enable = mkDefault true;
+    treefmt.config = {
+      settings.formatter."terramate-format" = mkIf config.knopki.terraform.terramate.enable {
+        command = "${config.knopki.terraform.terramate.package}/bin/terramate";
+        options = [
+          "fmt"
+        ];
+        includes = [ "*.hcl" ];
+      };
+      programs = {
+        terraform = {
+          inherit (cfg) package;
+          enable = mkDefault true;
+        };
       };
     };
 

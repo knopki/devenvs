@@ -59,9 +59,9 @@ in
       denofmt.enable = mkDefault true;
       markdownlint = {
         enable = mkDefault cfg.markdownlint.enable;
-        settings.configuration = {
+        settings.configuration = mkDefault {
           MD013 = {
-            tables = mkDefault false;
+            tables = false;
           };
         };
       };

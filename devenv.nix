@@ -1,6 +1,4 @@
 _: {
-  env.GREET = "devenvs";
-
   knopki = {
     menu.enable = true;
     git = {

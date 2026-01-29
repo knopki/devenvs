@@ -86,7 +86,7 @@ in
 
     git-hooks.hooks = {
       checkov = {
-        enable = mkDefault true;
+        enable = mkDefault cfg.checkov.enable;
         name = "Checkov";
         package = mkDefault cfg.checkov.package;
         pass_filenames = mkDefault false;
@@ -102,13 +102,39 @@ in
         enable = mkDefault true;
         package = mkDefault cfg.package;
       };
+      terramate-format = {
+        enable = mkDefault cfg.terramate.enable;
+        name = "terramate-format";
+        description = "Format HCL files";
+        package = mkDefault cfg.terramate.package;
+        entry = "terramate fmt --detailed-exit-code";
+        files = "\\.hcl$";
+      };
+      terramate-generate = {
+        enable = mkDefault cfg.terramate.enable;
+        name = "terramate-generate";
+        description = "Terramate codegen";
+        package = mkDefault cfg.terramate.package;
+        entry = "terramate generate --detailed-exit-code";
+        files = "\\.(hcl|tf|tfvars)$";
+        pass_filenames = false;
+      };
       tflint.enable = mkDefault cfg.tflint.enable;
     };
 
-    treefmt.config.programs = {
-      terraform = {
-        inherit (cfg) package;
-        enable = mkDefault true;
+    treefmt.config = {
+      settings.formatter."terramate-format" = mkIf config.knopki.terraform.terramate.enable {
+        command = "${config.knopki.terraform.terramate.package}/bin/terramate";
+        options = [
+          "fmt"
+        ];
+        includes = [ "*.hcl" ];
+      };
+      programs = {
+        terraform = {
+          inherit (cfg) package;
+          enable = mkDefault true;
+        };
       };
     };
 

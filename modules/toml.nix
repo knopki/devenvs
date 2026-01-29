@@ -16,9 +16,7 @@ in
     enable = mkEnableOption "Enable toml support";
 
     taplo = {
-      enable = mkEnableOption "Enable taplo" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable taplo";
       package = mkPackageOption config.git-hooks.hooks.taplo "package" { };
     };
   };

@@ -18,30 +18,22 @@ in
     enable = mkEnableOption "Enable markdown support";
 
     glow = {
-      enable = mkEnableOption "Enable glow viewer" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable glow viewer";
       package = mkPackageOption pkgs "glow" { };
     };
 
     lychee = {
-      enable = mkEnableOption "Enable lychee linter" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable lychee linter";
       package = mkPackageOption config.git-hooks.hooks.lychee "package" { };
     };
 
     marksman = {
-      enable = mkEnableOption "Enable marksman" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable marksman";
       package = mkPackageOption pkgs "marksman" { };
     };
 
     markdownlint = {
-      enable = mkEnableOption "Enable markdownlint" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable markdownlint";
       package = mkPackageOption config.git-hooks.hooks.markdownlint "package" { };
     };
   };

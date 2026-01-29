@@ -17,9 +17,7 @@ in
     enable = mkEnableOption "Enable yaml support";
 
     yamllint = {
-      enable = mkEnableOption "Enable yamllint" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable yamllint";
       package = mkPackageOption config.git-hooks.hooks.yamllint "package" { };
     };
   };

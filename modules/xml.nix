@@ -18,9 +18,7 @@ in
     enable = mkEnableOption "Enable xml support";
 
     xmllint = {
-      enable = mkEnableOption "Enable xmllint" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable xmllint";
       package =
         if config.treefmt.enable then
           mkPackageOption config.treefmt.config.programs.xmllint "package" { }
@@ -29,9 +27,7 @@ in
     };
 
     xmlstarlet = {
-      enable = mkEnableOption "Enable xmlstarlet" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable xmlstarlet";
       package = mkPackageOption pkgs "xmlstarlet" { };
     };
   };

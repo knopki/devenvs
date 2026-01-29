@@ -18,16 +18,12 @@ in
     enable = mkEnableOption "Enable json support";
 
     jq = {
-      enable = mkEnableOption "Enable jq" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable jq";
       package = mkPackageOption pkgs "jq" { };
     };
 
     fx = {
-      enable = mkEnableOption "Enable fx" // {
-        default = true;
-      };
+      enable = mkEnableOption "Enable fx";
       package = mkPackageOption pkgs "fx" { };
     };
   };

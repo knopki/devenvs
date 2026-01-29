@@ -57,7 +57,14 @@ in
     git-hooks.hooks = {
       lychee.enable = mkDefault cfg.lychee.enable;
       denofmt.enable = mkDefault true;
-      markdownlint.enable = mkDefault cfg.markdownlint.enable;
+      markdownlint = {
+        enable = mkDefault cfg.markdownlint.enable;
+        settings.configuration = {
+          MD013 = {
+            tables = mkDefault false;
+          };
+        };
+      };
     };
 
     treefmt.config.programs = {

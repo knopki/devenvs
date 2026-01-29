@@ -102,6 +102,23 @@ in
         enable = mkDefault true;
         package = mkDefault cfg.package;
       };
+      terramate-format = {
+        enable = mkDefault cfg.terramate.enable;
+        name = "terramate-format";
+        description = "Format HCL files";
+        package = mkDefault cfg.terramate.package;
+        entry = "terramate fmt --detailed-exit-code";
+        files = "\\.hcl$";
+      };
+      terramate-generate = {
+        enable = mkDefault cfg.terramate.enable;
+        name = "terramate-generate";
+        description = "Terramate codegen";
+        package = mkDefault cfg.terramate.package;
+        entry = "terramate generate --detailed-exit-code";
+        files = "\\.(hcl|tf|tfvars)$";
+        pass_filenames = false;
+      };
       tflint.enable = mkDefault cfg.tflint.enable;
     };
 

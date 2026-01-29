@@ -86,7 +86,7 @@ in
 
     git-hooks.hooks = {
       checkov = {
-        enable = mkDefault true;
+        enable = mkDefault cfg.checkov.enable;
         name = "Checkov";
         package = mkDefault cfg.checkov.package;
         pass_filenames = mkDefault false;

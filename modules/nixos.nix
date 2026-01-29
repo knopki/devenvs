@@ -50,10 +50,24 @@ in
 
   config = mkIf cfg.enable {
     knopki = {
-      git.enable = mkDefault true;
-      nix.enable = mkDefault true;
+      git = {
+        enable = mkDefault true;
+        gitleaks.enable = mkDefault true;
+      };
+      nix = {
+        enable = mkDefault true;
+        nixfmt.enable = mkDefault true;
+        flake-cheker.enable = mkDefault true;
+        deadnix.enable = mkDefault true;
+        statix.enable = mkDefault true;
+        dix.enable = mkDefault true;
+      };
       secrets.sops.enable = mkDefault true;
-      shell.enable = mkDefault true;
+      shell = {
+        enable = mkDefault true;
+        shellcheck.enable = mkDefault true;
+        shfmt.enable = mkDefault true;
+      };
     };
 
     packages =

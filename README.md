@@ -25,7 +25,7 @@ inputs:
   knopki-devenvs:
     url: github:knopki/devenvs
     flake: false
-
+allowUnfree: true
 imports:
   - knopki-devenvs/modules
 ```

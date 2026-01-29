@@ -57,7 +57,7 @@ in
       nix = {
         enable = mkDefault true;
         nixfmt.enable = mkDefault true;
-        flake-cheker.enable = mkDefault true;
+        flake-checker.enable = mkDefault true;
         deadnix.enable = mkDefault true;
         statix.enable = mkDefault true;
         dix.enable = mkDefault true;

@@ -6,8 +6,9 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.secrets;
@@ -44,7 +45,7 @@ in
     ];
 
     git-hooks.hooks = {
-      pre-commit-hook-ensure-sops = mkDefault cfg.sops.enable;
+      pre-commit-hook-ensure-sops = mkOverrideDefault cfg.sops.enable;
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "secrets"; } [

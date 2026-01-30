@@ -66,7 +66,6 @@ in
           "main"
         ];
       };
-      pre-commit-hook-ensure-sops.enable = mkOverrideDefault cfg.withGitHooks;
       gitleaks = mkIf cfg.gitleaks.enable {
         inherit (cfg.gitleaks) package;
         enable = mkOverrideDefault cfg.withGitHooks;

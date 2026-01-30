@@ -6,13 +6,17 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.shell;
 in
 {
+  imports = [
+    (mkAliasOptionModule [ "knopki" "shell" "lsp" ] [ "languages" "shell" "lsp" ])
+  ];
+
   options.knopki.shell = {
     enable = mkEnableOption "Enable shell support";
 
@@ -45,10 +49,7 @@ in
       cfg.shellcheck
     ];
 
-    languages.shell = {
-      enable = mkDefault true;
-      lsp.enable = mkDefault true; # bash-language-server
-    };
+    languages.shell.enable = mkDefault true;
 
     git-hooks.hooks = {
       shellcheck.enable = mkDefault cfg.shellcheck.enable;

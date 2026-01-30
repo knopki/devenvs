@@ -5,8 +5,9 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (config.lib) mkOverrideDefault;
   inherit (lib.lists) optional;
 
   cfg = config.knopki.containers;
@@ -17,7 +18,7 @@ in
 
     hadolint = {
       enable = mkEnableOption "Enable hadolint Dockerfile linter";
-      package = mkPackageOption config.git-hooks.hooks.hadolint "package" { };
+      package = mkPackageOption pkgs "hadolint" { };
     };
 
     lazydocker = {
@@ -32,7 +33,10 @@ in
       ++ optional cfg.lazydocker.enable cfg.lazydocker.package;
 
     git-hooks.hooks = {
-      hadolint.enable = mkDefault cfg.hadolint.enable;
+      hadolint = {
+        enable = mkOverrideDefault cfg.hadolint.enable;
+        package = mkOverrideDefault cfg.hadolint.package;
+      };
     };
 
     knopki.menu.commands = map (cmd: cmd // { category = "containers"; }) (

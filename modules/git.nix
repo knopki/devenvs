@@ -16,7 +16,7 @@ in
 {
   options.knopki.git = {
     enable = mkEnableOption "Enable Git";
-    package = mkPackageOption pkgs "git" { };
+    package = mkPackageOption pkgs "gitMinimal" { };
 
     gitleaks = {
       enable = mkEnableOption "Enable gitleaks";

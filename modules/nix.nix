@@ -17,7 +17,7 @@ in
     enable = mkEnableOption "Enable nix support";
     package = mkOption {
       type = lib.types.package;
-      default = pkgs.nixVersions.latest;
+      default = pkgs.nix;
       description = "The Nix package to use";
     };
 

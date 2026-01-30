@@ -6,19 +6,22 @@
   ...
 }:
 let
-  inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.shell;
 in
 {
-  imports = [
-    (mkAliasOptionModule [ "knopki" "shell" "lsp" ] [ "languages" "shell" "lsp" ])
-  ];
 
   options.knopki.shell = {
     enable = mkEnableOption "Enable shell support";
+
+    lsp = {
+      enable = mkEnableOption "Enable LSP";
+      package = mkPackageOption pkgs "bash-language-server" { };
+    };
 
     fd = {
       enable = mkEnableOption "Enable fd tool";
@@ -43,25 +46,33 @@ in
 
   config = mkIf cfg.enable {
     packages = packagesFromConfigs [
+      cfg.lsp
       cfg.fd
       cfg.ripgrep
       cfg.shfmt
       cfg.shellcheck
     ];
 
-    languages.shell.enable = mkDefault true;
-
     git-hooks.hooks = {
-      shellcheck.enable = mkDefault cfg.shellcheck.enable;
-      shfmt.enable = mkDefault cfg.shfmt.enable;
+      shellcheck = {
+        enable = mkOverrideDefault cfg.shellcheck.enable;
+        package = mkOverrideDefault cfg.shellcheck.package;
+      };
+      shfmt = {
+        enable = mkOverrideDefault cfg.shfmt.enable;
+        package = mkOverrideDefault cfg.shfmt.package;
+      };
     };
 
     treefmt.config.programs = {
-      shfmt.enable = mkDefault cfg.shfmt.enable;
+      shfmt = {
+        enable = mkOverrideDefault cfg.shfmt.enable;
+        package = mkOverrideDefault cfg.shfmt.package;
+      };
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "shell"; } [
-      config.languages.shell.lsp
+      cfg.lsp
       cfg.fd
       cfg.ripgrep
       cfg.shellcheck

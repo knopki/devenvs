@@ -3,6 +3,8 @@ _: {
     menu.enable = true;
     git = {
       enable = true;
+      withGitHooks = true;
+      difftastic.enable = true;
       gitleaks.enable = true;
       lazygit.enable = true;
     };
@@ -24,6 +26,6 @@ _: {
     };
   };
 
+  git-hooks.enable = true;
   treefmt.enable = true;
-
 }

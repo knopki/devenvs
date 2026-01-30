@@ -6,8 +6,9 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.security;
@@ -45,11 +46,11 @@ in
 
     git-hooks.hooks = {
       trivy-repository = {
-        inherit (cfg.trivy) package;
-        enable = mkDefault cfg.trivy.enable;
+        enable = mkOverrideDefault cfg.trivy.enable;
+        package = mkOverrideDefault cfg.trivy.package;
         name = "Trivy repository audit";
         pass_filenames = false;
-        entry = "trivy repository .";
+        entry = mkOverrideDefault "trivy repository .";
       };
     };
 

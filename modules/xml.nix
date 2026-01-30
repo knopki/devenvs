@@ -6,9 +6,10 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.xml;
@@ -19,11 +20,7 @@ in
 
     xmllint = {
       enable = mkEnableOption "Enable xmllint";
-      package =
-        if config.treefmt.enable then
-          mkPackageOption config.treefmt.config.programs.xmllint "package" { }
-        else
-          mkPackageOption pkgs "libxml2";
+      package = mkPackageOption pkgs "libxml2" { };
     };
 
     xmlstarlet = {
@@ -39,11 +36,21 @@ in
     ];
 
     git-hooks.hooks = {
-      check-xml.enable = mkDefault true;
+      check-xml.enable = mkOverrideDefault true;
+      xmllint = {
+        enable = mkOverrideDefault cfg.xmllint.enable;
+        package = mkOverrideDefault cfg.xmllint.package;
+        name = "xmllint";
+        entry = "xmllint";
+        files = "\\.(xml|svg|xhtml|xsl|xslt|dtd|xsd)$";
+      };
     };
 
     treefmt.config.programs = {
-      xmllint.enable = mkDefault cfg.xmllint.enable;
+      xmllint = {
+        enable = mkOverrideDefault cfg.xmllint.enable;
+        package = mkOverrideDefault cfg.xmllint.package;
+      };
     };
 
     knopki.menu.commands =

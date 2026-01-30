@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkAliasOptionModule mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
   inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
@@ -14,10 +14,6 @@ let
   cfg = config.knopki.nix;
 in
 {
-  imports = [
-    (mkAliasOptionModule [ "knopki" "nix" "lsp" ] [ "languages" "nix" "lsp" ])
-  ];
-
   options.knopki.nix = {
     enable = mkEnableOption "Enable nix support";
     package = mkOption {

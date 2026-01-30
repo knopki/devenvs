@@ -6,12 +6,19 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.nixos;
+
+  # a bit of indirection to prevent mkShell from overriding the installed Nix
+  vulnix = pkgs.buildEnv {
+    name = "vulnix";
+    paths = [ pkgs.vulnix ];
+    pathsToLink = [ "/bin" ];
+  };
 in
 {
   options.knopki.nixos = {
@@ -46,30 +53,16 @@ in
       enable = mkEnableOption "Enable nixos install tools";
       package = mkPackageOption pkgs "nixos-install-tools" { };
     };
+
+    vulnix = {
+      enable = mkEnableOption "Enable vulnix";
+      package = mkPackageOption pkgs "vulnix" { } // {
+        default = vulnix;
+      };
+    };
   };
 
   config = mkIf cfg.enable {
-    knopki = {
-      git = {
-        enable = mkDefault true;
-        gitleaks.enable = mkDefault true;
-      };
-      nix = {
-        enable = mkDefault true;
-        nixfmt.enable = mkDefault true;
-        flake-checker.enable = mkDefault true;
-        deadnix.enable = mkDefault true;
-        statix.enable = mkDefault true;
-        dix.enable = mkDefault true;
-      };
-      secrets.sops.enable = mkDefault true;
-      shell = {
-        enable = mkDefault true;
-        shellcheck.enable = mkDefault true;
-        shfmt.enable = mkDefault true;
-      };
-    };
-
     packages =
       packagesFromConfigs [
         cfg.nh
@@ -77,6 +70,7 @@ in
         cfg.nixos-anywhere
         cfg.nixos-build-vms
         cfg.nixos-rebuild
+        cfg.vulnix
       ]
       ++ optional cfg.nixos-rebuild.enable cfg.nixos-install-tools.package;
 
@@ -87,6 +81,7 @@ in
         cfg.nixos-anywhere
         cfg.nixos-build-vms
         cfg.nixos-rebuild
+        cfg.vulnix
       ]
       ++ optionals cfg.nixos-install-tools.enable (
         map

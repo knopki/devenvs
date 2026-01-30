@@ -90,50 +90,53 @@ in
       lsp.enable = mkDefault true;
     };
 
-    git-hooks.hooks = {
-      checkov = {
-        enable = mkDefault cfg.checkov.enable;
-        name = "Checkov";
-        package = mkDefault cfg.checkov.package;
-        pass_filenames = mkDefault false;
-        entry = mkDefault ''
-          ${getExe cfg.checkov.package}
-        '';
-      };
-      terraform-format = {
-        enable = mkDefault true;
-        package = mkDefault cfg.package;
-      };
-      terraform-validate = {
-        enable = mkDefault true;
-        package = mkDefault cfg.package;
-      };
-      terramate-format = {
-        enable = mkDefault cfg.terramate.enable;
-        name = "terramate-format";
-        description = "Format HCL files";
-        package = mkDefault cfg.terramate.package;
-        entry = "terramate fmt --detailed-exit-code";
-        files = "\\.hcl$";
-      };
-      terramate-generate = {
-        enable = mkDefault cfg.terramate.enable;
-        name = "terramate-generate";
-        description = "Terramate codegen";
-        package = mkDefault cfg.terramate.package;
-        entry = "terramate generate --detailed-exit-code";
-        files = "\\.(hcl|tf|tfvars)$";
-        pass_filenames = false;
-      };
-      tflint.enable = mkDefault cfg.tflint.enable;
-      tfsec = {
-        enable = mkDefault cfg.tfsec.enable;
-        name = "tfsec";
-        description = "tfsec security scanner";
-        package = mkDefault cfg.tfsec.package;
-        entry = "tfsec";
-        files = "\\.(hcl|tf|tfvars)$";
-        pass_filenames = false;
+    git-hooks = {
+      excludes = [ "\\.terraform" ];
+      hooks = {
+        checkov = {
+          enable = mkDefault cfg.checkov.enable;
+          name = "Checkov";
+          package = mkDefault cfg.checkov.package;
+          pass_filenames = mkDefault false;
+          entry = mkDefault ''
+            ${getExe cfg.checkov.package}
+          '';
+        };
+        terraform-format = {
+          enable = mkDefault true;
+          package = mkDefault cfg.package;
+        };
+        terraform-validate = {
+          enable = mkDefault true;
+          package = mkDefault cfg.package;
+        };
+        terramate-format = {
+          enable = mkDefault cfg.terramate.enable;
+          name = "terramate-format";
+          description = "Format HCL files";
+          package = mkDefault cfg.terramate.package;
+          entry = "terramate fmt --detailed-exit-code";
+          files = "\\.hcl$";
+        };
+        terramate-generate = {
+          enable = mkDefault cfg.terramate.enable;
+          name = "terramate-generate";
+          description = "Terramate codegen";
+          package = mkDefault cfg.terramate.package;
+          entry = "terramate generate --detailed-exit-code";
+          files = "\\.(hcl|tf|tfvars)$";
+          pass_filenames = false;
+        };
+        tflint.enable = mkDefault cfg.tflint.enable;
+        tfsec = {
+          enable = mkDefault cfg.tfsec.enable;
+          name = "tfsec";
+          description = "tfsec security scanner";
+          package = mkDefault cfg.tfsec.package;
+          entry = "tfsec";
+          files = "\\.(hcl|tf|tfvars)$";
+          pass_filenames = false;
+        };
       };
     };
 

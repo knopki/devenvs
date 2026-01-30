@@ -1,6 +1,7 @@
 { lib, config, pkgs, ... }:
 let
   inherit (builtins) attrValues;
+  inherit (lib.modules) mkDefault;
   inherit (config.lib) mkOverrideDefault;
   myModules = import ./modules-list.nix;
 in
@@ -9,10 +10,10 @@ in
 
   imports = attrValues myModules;
 
-  devenv.warnOnNewVersion = mkOverrideDefault false;
+  devenv.warnOnNewVersion = mkDefault false;
 
   git-hooks = {
-    enable = mkOverrideDefault false;
+    enable = mkDefault false;
     package = mkOverrideDefault pkgs.prek;
     excludes = [
       "^.devenv\..*/"

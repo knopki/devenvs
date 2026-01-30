@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (config.lib) mkOverrideDefault;
@@ -74,34 +74,34 @@ in
 
     git-hooks.hooks = {
       deadnix = {
-        enable = mkOverrideDefault cfg.deadnix.enable;
+        enable = mkDefault cfg.deadnix.enable;
         package = mkOverrideDefault cfg.deadnix.package;
       };
       flake-checker = {
-        enable = mkOverrideDefault cfg.flake-checker.enable;
+        enable = mkDefault cfg.flake-checker.enable;
         package = mkOverrideDefault cfg.flake-checker.package;
       };
       nixfmt-rfc-style = {
-        enable = mkOverrideDefault cfg.nixfmt.enable;
+        enable = mkDefault cfg.nixfmt.enable;
         package = mkOverrideDefault cfg.nixfmt.package;
       };
       statix = {
-        enable = mkOverrideDefault cfg.statix.enable;
+        enable = mkDefault cfg.statix.enable;
         package = mkOverrideDefault cfg.statix.package;
       };
     };
 
     treefmt.config.programs = {
       deadnix = {
-        enable = mkOverrideDefault cfg.deadnix.enable;
+        enable = mkDefault cfg.deadnix.enable;
         package = mkOverrideDefault cfg.deadnix.package;
       };
       nixfmt = {
-        enable = mkOverrideDefault cfg.nixfmt.enable;
+        enable = mkDefault cfg.nixfmt.enable;
         package = mkOverrideDefault cfg.nixfmt.package;
       };
       statix = {
-        enable = mkOverrideDefault cfg.statix.enable;
+        enable = mkDefault cfg.statix.enable;
         package = mkOverrideDefault cfg.statix.package;
       };
     };

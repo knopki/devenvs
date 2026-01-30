@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
@@ -46,11 +46,11 @@ in
 
     git-hooks.hooks = {
       trivy-repository = {
-        enable = mkOverrideDefault cfg.trivy.enable;
+        enable = mkDefault cfg.trivy.enable;
         package = mkOverrideDefault cfg.trivy.package;
         name = "Trivy repository audit";
         pass_filenames = false;
-        entry = mkOverrideDefault "trivy repository .";
+        entry = mkDefault "trivy repository .";
       };
     };
 

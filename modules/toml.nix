@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
@@ -27,16 +27,16 @@ in
     packages = packagesFromConfigs [ cfg.taplo ];
 
     git-hooks.hooks = {
-      check-toml.enable = mkOverrideDefault true;
+      check-toml.enable = mkDefault true;
       taplo = {
-        enable = mkOverrideDefault cfg.taplo.enable;
+        enable = mkDefault cfg.taplo.enable;
         package = mkOverrideDefault cfg.taplo.package;
       };
     };
 
     treefmt.config.programs = {
       taplo = {
-        enable = mkOverrideDefault cfg.taplo.enable;
+        enable = mkDefault cfg.taplo.enable;
         package = mkOverrideDefault cfg.taplo.package;
       };
     };

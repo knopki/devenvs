@@ -6,10 +6,9 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
-  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.json;
@@ -38,13 +37,13 @@ in
       ++ optional config.treefmt.enable config.treefmt.config.programs.formatjson5.package;
 
     git-hooks.hooks = {
-      check-json.enable = mkOverrideDefault true;
-      denofmt.enable = mkOverrideDefault true;
+      check-json.enable = mkDefault true;
+      denofmt.enable = mkDefault true;
     };
 
     treefmt.config.programs = {
-      deno.enable = mkOverrideDefault true;
-      formatjson5.enable = mkOverrideDefault true;
+      deno.enable = mkDefault true;
+      formatjson5.enable = mkDefault true;
     };
 
     knopki.menu.commands =

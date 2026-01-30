@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (config.lib) mkOverrideDefault;
@@ -30,12 +30,12 @@ in
     ];
 
     git-hooks.hooks = {
-      check-yaml.enable = mkOverrideDefault true;
-      denofmt.enable = mkOverrideDefault true;
+      check-yaml.enable = mkDefault true;
+      denofmt.enable = mkDefault true;
       yamllint = {
-        enable = mkOverrideDefault cfg.yamllint.enable;
+        enable = mkDefault cfg.yamllint.enable;
         package = mkOverrideDefault cfg.yamllint.package;
-        settings.configuration = mkOverrideDefault ''
+        settings.configuration = mkDefault ''
           rules:
             comments:
               min-spaces-from-content: 1
@@ -44,7 +44,7 @@ in
     };
 
     treefmt.config.programs = {
-      deno.enable = mkOverrideDefault true;
+      deno.enable = mkDefault true;
     };
 
     knopki.menu.commands =

@@ -1,7 +1,7 @@
-{ lib, ... }:
+{ lib, config, pkgs, ... }:
 let
   inherit (builtins) attrValues;
-  inherit (lib.modules) mkDefault;
+  inherit (config.lib) mkOverrideDefault;
   myModules = import ./modules-list.nix;
 in
 {
@@ -9,12 +9,16 @@ in
 
   imports = attrValues myModules;
 
-  devenv.warnOnNewVersion = mkDefault false;
+  devenv.warnOnNewVersion = mkOverrideDefault false;
 
-  git-hooks.excludes = [
-    "^.devenv\..*/"
-    "^.git/"
-  ];
+  git-hooks = {
+    enable = mkOverrideDefault false;
+    package = mkOverrideDefault pkgs.prek;
+    excludes = [
+      "^.devenv\..*/"
+      "^.git/"
+    ];
+  };
 
   treefmt.config.settings.global.excludes = [
     ".devenv/*"

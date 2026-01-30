@@ -6,23 +6,25 @@
   ...
 }:
 let
-  inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.terraform;
 in
 {
-  imports = [
-    (mkAliasOptionModule [ "knopki" "terraform" "package" ] [ "languages" "terraform" "package" ])
-    (mkAliasOptionModule [ "knopki" "terraform" "version" ] [ "languages" "terraform" "version" ])
-  ];
-
   options.knopki.terraform = {
     enable = mkEnableOption "Enable terraform support" // {
       default = cfg.terragrunt.enable || cfg.terramate.enable;
+    };
+    package = mkPackageOption pkgs "terraform" { };
+
+    lsp = {
+      enable = mkEnableOption "Enable LSP";
+      package = mkPackageOption pkgs "terraform-ls" { };
     };
 
     checkov = {
@@ -83,56 +85,52 @@ in
       cfg.terraformer
       cfg.terragrunt
       cfg.terramate
+      cfg.lsp
     ];
-
-    languages.terraform = {
-      enable = mkDefault true;
-      lsp.enable = mkDefault true;
-    };
 
     git-hooks = {
       excludes = [ "\\.terraform" ];
       hooks = {
         checkov = {
-          enable = mkDefault cfg.checkov.enable;
+          enable = mkOverrideDefault cfg.checkov.enable;
           name = "Checkov";
           package = mkDefault cfg.checkov.package;
-          pass_filenames = mkDefault false;
-          entry = mkDefault ''
+          pass_filenames = mkOverrideDefault false;
+          entry = mkOverrideDefault ''
             ${getExe cfg.checkov.package}
           '';
         };
         terraform-format = {
-          enable = mkDefault true;
-          package = mkDefault cfg.package;
+          enable = mkOverrideDefault true;
+          package = mkOverrideDefault cfg.package;
         };
         terraform-validate = {
-          enable = mkDefault true;
-          package = mkDefault cfg.package;
+          enable = mkOverrideDefault true;
+          package = mkOverrideDefault cfg.package;
         };
         terramate-format = {
-          enable = mkDefault cfg.terramate.enable;
+          enable = mkOverrideDefault cfg.terramate.enable;
           name = "terramate-format";
           description = "Format HCL files";
-          package = mkDefault cfg.terramate.package;
-          entry = "terramate fmt --detailed-exit-code";
-          files = "\\.hcl$";
+          package = mkOverrideDefault cfg.terramate.package;
+          entry = mkOverrideDefault "terramate fmt --detailed-exit-code";
+          files = mkOverrideDefault "\\.hcl$";
         };
         terramate-generate = {
-          enable = mkDefault cfg.terramate.enable;
+          enable = mkOverrideDefault cfg.terramate.enable;
           name = "terramate-generate";
           description = "Terramate codegen";
-          package = mkDefault cfg.terramate.package;
-          entry = "terramate generate --detailed-exit-code";
-          files = "\\.(hcl|tf|tfvars)$";
+          package = mkOverrideDefault cfg.terramate.package;
+          entry = mkOverrideDefault "terramate generate --detailed-exit-code";
+          files = mkOverrideDefault "\\.(hcl|tf|tfvars)$";
           pass_filenames = false;
         };
-        tflint.enable = mkDefault cfg.tflint.enable;
+        tflint.enable = mkOverrideDefault cfg.tflint.enable;
         tfsec = {
-          enable = mkDefault cfg.tfsec.enable;
+          enable = mkOverrideDefault cfg.tfsec.enable;
           name = "tfsec";
           description = "tfsec security scanner";
-          package = mkDefault cfg.tfsec.package;
+          package = mkOverrideDefault cfg.tfsec.package;
           entry = "tfsec";
           files = "\\.(hcl|tf|tfvars)$";
           pass_filenames = false;
@@ -151,7 +149,7 @@ in
       programs = {
         terraform = {
           inherit (cfg) package;
-          enable = mkDefault true;
+          enable = mkOverrideDefault true;
         };
       };
     };
@@ -166,6 +164,7 @@ in
         cfg.terraform-docs
         cfg.terraformer
         cfg.terragrunt
+        cfg.lsp
       ]
       ++ optional cfg.terramate.enable {
         inherit (cfg.terramate) package;

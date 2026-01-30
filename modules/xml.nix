@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (config.lib) mkOverrideDefault;
@@ -36,9 +36,9 @@ in
     ];
 
     git-hooks.hooks = {
-      check-xml.enable = mkOverrideDefault true;
+      check-xml.enable = mkDefault true;
       xmllint = {
-        enable = mkOverrideDefault cfg.xmllint.enable;
+        enable = mkDefault cfg.xmllint.enable;
         package = mkOverrideDefault cfg.xmllint.package;
         name = "xmllint";
         entry = "xmllint";
@@ -48,7 +48,7 @@ in
 
     treefmt.config.programs = {
       xmllint = {
-        enable = mkOverrideDefault cfg.xmllint.enable;
+        enable = mkDefault cfg.xmllint.enable;
         package = mkOverrideDefault cfg.xmllint.package;
       };
     };

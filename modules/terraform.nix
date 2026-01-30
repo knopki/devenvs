@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
@@ -92,42 +92,42 @@ in
       excludes = [ "\\.terraform" ];
       hooks = {
         checkov = {
-          enable = mkOverrideDefault cfg.checkov.enable;
+          enable = mkDefault cfg.checkov.enable;
           name = "Checkov";
           package = mkOverrideDefault cfg.checkov.package;
-          pass_filenames = mkOverrideDefault false;
-          entry = mkOverrideDefault ''
+          pass_filenames = mkDefault false;
+          entry = mkDefault ''
             ${getExe cfg.checkov.package}
           '';
         };
         terraform-format = {
-          enable = mkOverrideDefault true;
+          enable = mkDefault true;
           package = mkOverrideDefault cfg.package;
         };
         terraform-validate = {
-          enable = mkOverrideDefault true;
+          enable = mkDefault true;
           package = mkOverrideDefault cfg.package;
         };
         terramate-format = {
-          enable = mkOverrideDefault cfg.terramate.enable;
+          enable = mkDefault cfg.terramate.enable;
           name = "terramate-format";
           description = "Format HCL files";
           package = mkOverrideDefault cfg.terramate.package;
-          entry = mkOverrideDefault "terramate fmt --detailed-exit-code";
-          files = mkOverrideDefault "\\.hcl$";
+          entry = mkDefault "terramate fmt --detailed-exit-code";
+          files = mkDefault "\\.hcl$";
         };
         terramate-generate = {
-          enable = mkOverrideDefault cfg.terramate.enable;
+          enable = mkDefault cfg.terramate.enable;
           name = "terramate-generate";
           description = "Terramate codegen";
           package = mkOverrideDefault cfg.terramate.package;
-          entry = mkOverrideDefault "terramate generate --detailed-exit-code";
-          files = mkOverrideDefault "\\.(hcl|tf|tfvars)$";
+          entry = mkDefault "terramate generate --detailed-exit-code";
+          files = mkDefault "\\.(hcl|tf|tfvars)$";
           pass_filenames = false;
         };
-        tflint.enable = mkOverrideDefault cfg.tflint.enable;
+        tflint.enable = mkDefault cfg.tflint.enable;
         tfsec = {
-          enable = mkOverrideDefault cfg.tfsec.enable;
+          enable = mkDefault cfg.tfsec.enable;
           name = "tfsec";
           description = "tfsec security scanner";
           package = mkOverrideDefault cfg.tfsec.package;
@@ -148,8 +148,8 @@ in
       };
       programs = {
         terraform = {
-          inherit (cfg) package;
-          enable = mkOverrideDefault true;
+          enable = mkDefault true;
+          package = mkOverrideDefault cfg.package;
         };
       };
     };

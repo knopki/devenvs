@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
   inherit (config.lib) mkOverrideDefault;
@@ -74,7 +74,7 @@ in
 
     treefmt.config.programs = {
       sqruff = {
-        enable = mkOverrideDefault cfg.sqruff.enable;
+        enable = mkDefault cfg.sqruff.enable;
         package = mkOverrideDefault cfg.sqruff.package;
       };
     };
@@ -109,7 +109,7 @@ in
         name = "dblab";
       };
 
-    services.postgres.enable = mkOverrideDefault cfg.postgres.service.enable;
+    services.postgres.enable = mkDefault cfg.postgres.service.enable;
 
     tasks = {
       "services:postgres:reset" = mkIf cfg.postgres.service.enable {

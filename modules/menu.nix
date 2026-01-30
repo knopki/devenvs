@@ -13,12 +13,11 @@ let
     sort
     stringLength
     ;
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) literalExpression mkEnableOption mkOption;
   inherit (lib.strings) getVersion;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
-  inherit (config.lib) mkOverrideDefault;
 
   cfg = config.knopki.menu;
 
@@ -179,7 +178,7 @@ in
       inherit (config.git-hooks) package;
     };
 
-    scripts.menu.exec = mkOverrideDefault ''
+    scripts.menu.exec = mkDefault ''
       ${pkgs.coreutils}/bin/cat <<'MAIN_MENU'
       ${commandsToMenu cfg.commands}
       MAIN_MENU

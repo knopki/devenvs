@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (config.lib) mkOverrideDefault;
@@ -49,14 +49,14 @@ in
 
     git-hooks.hooks = {
       lychee = {
-        enable = mkOverrideDefault cfg.lychee.enable;
+        enable = mkDefault cfg.lychee.enable;
         package = mkOverrideDefault cfg.lychee.package;
       };
-      denofmt.enable = mkOverrideDefault true;
+      denofmt.enable = mkDefault true;
       markdownlint = {
-        enable = mkOverrideDefault cfg.markdownlint.enable;
+        enable = mkDefault cfg.markdownlint.enable;
         package = mkOverrideDefault cfg.markdownlint.package;
-        settings.configuration = mkOverrideDefault {
+        settings.configuration = mkDefault {
           MD013 = {
             tables = false;
           };
@@ -65,7 +65,7 @@ in
     };
 
     treefmt.config.programs = {
-      deno.enable = mkOverrideDefault true;
+      deno.enable = mkDefault true;
     };
 
     knopki.menu.commands =

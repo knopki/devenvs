@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
@@ -55,18 +55,18 @@ in
 
     git-hooks.hooks = {
       shellcheck = {
-        enable = mkOverrideDefault cfg.shellcheck.enable;
+        enable = mkDefault cfg.shellcheck.enable;
         package = mkOverrideDefault cfg.shellcheck.package;
       };
       shfmt = {
-        enable = mkOverrideDefault cfg.shfmt.enable;
+        enable = mkDefault cfg.shfmt.enable;
         package = mkOverrideDefault cfg.shfmt.package;
       };
     };
 
     treefmt.config.programs = {
       shfmt = {
-        enable = mkOverrideDefault cfg.shfmt.enable;
+        enable = mkDefault cfg.shfmt.enable;
         package = mkOverrideDefault cfg.shfmt.package;
       };
     };

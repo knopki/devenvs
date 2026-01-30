@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkIf;
+  inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (config.lib) mkOverrideDefault;
   inherit (lib.lists) optional;
@@ -34,7 +34,7 @@ in
 
     git-hooks.hooks = {
       hadolint = {
-        enable = mkOverrideDefault cfg.hadolint.enable;
+        enable = mkDefault cfg.hadolint.enable;
         package = mkOverrideDefault cfg.hadolint.package;
       };
     };

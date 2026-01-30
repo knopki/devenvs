@@ -6,9 +6,10 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.markdown;
@@ -24,7 +25,7 @@ in
 
     lychee = {
       enable = mkEnableOption "Enable lychee linter";
-      package = mkPackageOption config.git-hooks.hooks.lychee "package" { };
+      package = mkPackageOption pkgs "lychee" { };
     };
 
     marksman = {
@@ -34,7 +35,7 @@ in
 
     markdownlint = {
       enable = mkEnableOption "Enable markdownlint";
-      package = mkPackageOption config.git-hooks.hooks.markdownlint "package" { };
+      package = mkPackageOption pkgs.nodePackages "markdownlint-cli" { };
     };
   };
 
@@ -47,11 +48,15 @@ in
     ];
 
     git-hooks.hooks = {
-      lychee.enable = mkDefault cfg.lychee.enable;
-      denofmt.enable = mkDefault true;
+      lychee = {
+        enable = mkOverrideDefault cfg.lychee.enable;
+        package = mkOverrideDefault cfg.lychee.package;
+      };
+      denofmt.enable = mkOverrideDefault true;
       markdownlint = {
-        enable = mkDefault cfg.markdownlint.enable;
-        settings.configuration = mkDefault {
+        enable = mkOverrideDefault cfg.markdownlint.enable;
+        package = mkOverrideDefault cfg.markdownlint.package;
+        settings.configuration = mkOverrideDefault {
           MD013 = {
             tables = false;
           };
@@ -60,7 +65,7 @@ in
     };
 
     treefmt.config.programs = {
-      deno.enable = mkDefault true;
+      deno.enable = mkOverrideDefault true;
     };
 
     knopki.menu.commands =

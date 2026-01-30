@@ -45,6 +45,11 @@ in
       package = mkPackageOption pkgs "tflint" { };
     };
 
+    tfsec = {
+      enable = mkEnableOption "Enable tfsec linter";
+      package = mkPackageOption pkgs "tfsec" { };
+    };
+
     terraform-docs = {
       enable = mkEnableOption "Enable terraform-docs";
       package = mkPackageOption pkgs "terraform-docs" { };
@@ -72,6 +77,7 @@ in
       cfg.checkov
       cfg.tfautomv
       cfg.tflint
+      cfg.tfsec
       cfg.tf-summarize
       cfg.terraform-docs
       cfg.terraformer
@@ -120,6 +126,15 @@ in
         pass_filenames = false;
       };
       tflint.enable = mkDefault cfg.tflint.enable;
+      tfsec = {
+        enable = mkDefault cfg.tfsec.enable;
+        name = "tfsec";
+        description = "tfsec security scanner";
+        package = mkDefault cfg.tfsec.package;
+        entry = "tfsec";
+        files = "\\.(hcl|tf|tfvars)$";
+        pass_filenames = false;
+      };
     };
 
     treefmt.config = {
@@ -152,6 +167,11 @@ in
       ++ optional cfg.terramate.enable {
         inherit (cfg.terramate) package;
         name = "terramate";
+        category = "terraform";
+      }
+      ++ optional cfg.tfsec.enable {
+        inherit (cfg.tfsec) package;
+        name = "tfsec";
         category = "terraform";
       };
   };

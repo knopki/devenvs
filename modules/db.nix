@@ -6,9 +6,10 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.db;
@@ -53,6 +54,11 @@ in
       enable = mkEnableOption "Enable rainfrog postgres client";
       package = mkPackageOption pkgs "rainfrog" { };
     };
+
+    sqruff = {
+      enable = mkEnableOption "Enable sqruff formatter";
+      package = mkPackageOption pkgs "sqruff" { };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -63,10 +69,14 @@ in
       cfg.harlequin
       cfg.lazysql
       cfg.rainfrog
+      cfg.sqruff
     ];
 
     treefmt.config.programs = {
-      sqruff.enable = mkDefault (cfg.sqlite.enable or cfg.postgres.enable);
+      sqruff = {
+        enable = mkOverrideDefault cfg.sqruff.enable;
+        package = mkOverrideDefault cfg.sqruff.package;
+      };
     };
 
     knopki.menu.commands =
@@ -92,15 +102,14 @@ in
         cfg.harlequin
         cfg.lazysql
         cfg.rainfrog
+        cfg.sqruff
       ]
       ++ optional cfg.dblab.enable {
         inherit (cfg.dblab) package;
         name = "dblab";
       };
 
-    services.postgres = mkIf cfg.postgres.service.enable {
-      enable = mkDefault true;
-    };
+    services.postgres.enable = mkOverrideDefault cfg.postgres.service.enable;
 
     tasks = {
       "services:postgres:reset" = mkIf cfg.postgres.service.enable {

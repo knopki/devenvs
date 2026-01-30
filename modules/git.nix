@@ -6,17 +6,24 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkAliasOptionModule mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.meta) getExe;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.git;
 in
 {
+  imports = [
+    (mkAliasOptionModule [ "knopki" "git" "delta" ] [ "delta" ])
+    (mkAliasOptionModule [ "knopki" "git" "difftastic" ] [ "difftastic" ])
+  ];
+
   options.knopki.git = {
     enable = mkEnableOption "Enable Git";
     package = mkPackageOption pkgs "gitMinimal" { };
+    withGitHooks = mkEnableOption "Enable standard git hooks";
 
     gitleaks = {
       enable = mkEnableOption "Enable gitleaks";
@@ -38,35 +45,31 @@ in
       cfg.lazygit
     ];
 
-    difftastic.enable = mkDefault true;
-
-    delta.enable = mkDefault (!config.difftastic.enable);
-
     git-hooks.hooks = {
-      check-added-large-files.enable = mkDefault true;
-      check-case-conflicts.enable = mkDefault true;
-      check-executables-have-shebangs.enable = mkDefault true;
-      check-merge-conflicts.enable = mkDefault true;
-      check-shebang-scripts-are-executable.enable = mkDefault true;
-      check-symlinks.enable = mkDefault true;
-      check-vcs-permalinks.enable = mkDefault true;
-      commitizen.enable = mkDefault true;
-      detect-private-keys.enable = mkDefault true;
-      end-of-file-fixer.enable = mkDefault true;
-      fix-byte-order-marker.enable = mkDefault true;
-      gitlint = mkDefault true;
-      mixed-line-endings.enable = mkDefault true;
+      check-added-large-files.enable = mkOverrideDefault cfg.withGitHooks;
+      check-case-conflicts.enable = mkOverrideDefault cfg.withGitHooks;
+      check-executables-have-shebangs.enable = mkOverrideDefault cfg.withGitHooks;
+      check-merge-conflicts.enable = mkOverrideDefault cfg.withGitHooks;
+      check-shebang-scripts-are-executable.enable = mkOverrideDefault cfg.withGitHooks;
+      check-symlinks.enable = mkOverrideDefault cfg.withGitHooks;
+      check-vcs-permalinks.enable = mkOverrideDefault cfg.withGitHooks;
+      commitizen.enable = mkOverrideDefault cfg.withGitHooks;
+      detect-private-keys.enable = mkOverrideDefault cfg.withGitHooks;
+      end-of-file-fixer.enable = mkOverrideDefault cfg.withGitHooks;
+      fix-byte-order-marker.enable = mkOverrideDefault cfg.withGitHooks;
+      gitlint = mkOverrideDefault cfg.withGitHooks;
+      mixed-line-endings.enable = mkOverrideDefault cfg.withGitHooks;
       no-commit-to-branch = {
-        enable = mkDefault true;
-        settings.branch = mkDefault [
+        enable = mkOverrideDefault cfg.withGitHooks;
+        settings.branch = mkOverrideDefault [
           "master"
           "main"
         ];
       };
-      pre-commit-hook-ensure-sops.enable = mkDefault true;
+      pre-commit-hook-ensure-sops.enable = mkOverrideDefault cfg.withGitHooks;
       gitleaks = mkIf cfg.gitleaks.enable {
         inherit (cfg.gitleaks) package;
-        enable = mkDefault true;
+        enable = mkOverrideDefault cfg.withGitHooks;
         pass_filenames = false;
         entry = "${getExe cfg.gitleaks.package} git";
         args = [

@@ -35,12 +35,12 @@ in
 
     shellcheck = {
       enable = mkEnableOption "Enable shellcheck linter";
-      package = mkPackageOption config.git-hooks.hooks.shellcheck "package" { };
+      package = mkPackageOption pkgs "shellcheck" { };
     };
 
     shfmt = {
       enable = mkEnableOption "Enable shfmt formatting";
-      package = mkPackageOption config.git-hooks.hooks.shfmt "package" { };
+      package = mkPackageOption pkgs "shfmt" { };
     };
   };
 

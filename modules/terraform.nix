@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
@@ -94,7 +94,7 @@ in
         checkov = {
           enable = mkOverrideDefault cfg.checkov.enable;
           name = "Checkov";
-          package = mkDefault cfg.checkov.package;
+          package = mkOverrideDefault cfg.checkov.package;
           pass_filenames = mkOverrideDefault false;
           entry = mkOverrideDefault ''
             ${getExe cfg.checkov.package}

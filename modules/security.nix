@@ -8,7 +8,6 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.meta) getExe;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.security;
@@ -16,7 +15,7 @@ in
 {
   options.knopki.security = {
     enable = mkEnableOption "Enable markdown support" // {
-      default = cfg.grype.enable or cfg.syft.enable or cfg.trivy.enable;
+      default = cfg.grype.enable || cfg.syft.enable || cfg.trivy.enable;
     };
 
     grype = {
@@ -50,9 +49,7 @@ in
         enable = mkDefault cfg.trivy.enable;
         name = "Trivy repository audit";
         pass_filenames = false;
-        entry = ''
-          ${getExe cfg.trivy.package} repository .
-        '';
+        entry = "trivy repository .";
       };
     };
 

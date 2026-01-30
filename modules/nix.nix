@@ -6,13 +6,17 @@
   ...
 }:
 let
-  inherit (lib.modules) mkDefault mkIf;
+  inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.nix;
 in
 {
+  imports = [
+    (mkAliasOptionModule [ "knopki" "nix" "lsp" ] [ "languages" "nix" "lsp" ])
+  ];
+
   options.knopki.nix = {
     enable = mkEnableOption "Enable nix support";
     package = mkOption {
@@ -59,10 +63,7 @@ in
       cfg.dix
     ];
 
-    languages.nix = {
-      enable = mkDefault true;
-      lsp.enable = mkDefault true; # nixd
-    };
+    languages.nix.enable = mkDefault true;
 
     git-hooks.hooks = {
       deadnix.enable = mkDefault cfg.deadnix.enable;

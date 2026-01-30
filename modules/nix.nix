@@ -6,8 +6,9 @@
   ...
 }:
 let
-  inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
+  inherit (lib.modules) mkAliasOptionModule mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
+  inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.nix;
@@ -25,26 +26,36 @@ in
       description = "The Nix package to use";
     };
 
+    lsp = {
+      enable = mkEnableOption "Enable LSP server";
+      package = mkPackageOption pkgs "nixd" { };
+    };
+
     nixfmt = {
-      enable = mkEnableOption "Enable nixfmt" // {
-        default = true;
-      };
-      package = mkPackageOption config.git-hooks.hooks.nixfmt-rfc-style "package" { };
+      enable = mkEnableOption "Enable nixfmt";
+      package = mkPackageOption pkgs "nixfmt-rfc-style" { };
     };
 
     flake-checker = {
       enable = mkEnableOption "Enable flake-checker";
-      package = mkPackageOption config.git-hooks.hooks.flake-checker "package" { };
+      package = mkPackageOption pkgs "flake-checker" { };
     };
 
     deadnix = {
       enable = mkEnableOption "Enable deadnix";
-      package = mkPackageOption config.git-hooks.hooks.deadnix "package" { };
+      package = mkPackageOption pkgs "deadnix" { };
     };
 
     statix = {
       enable = mkEnableOption "Enable statix";
-      package = mkPackageOption config.git-hooks.hooks.statix "package" { };
+      package = mkPackageOption pkgs "statix" { };
+    };
+
+    cachix = {
+      enable = mkEnableOption "Enable cachix" // {
+        default = config.cachix.enable;
+      };
+      package = mkPackageOption config.cachix "package" { };
     };
 
     dix = {
@@ -56,6 +67,8 @@ in
   config = mkIf cfg.enable {
     packages = packagesFromConfigs [
       cfg
+      cfg.lsp
+      cfg.cachix
       cfg.nixfmt
       cfg.flake-checker
       cfg.deadnix
@@ -63,29 +76,49 @@ in
       cfg.dix
     ];
 
-    languages.nix.enable = mkDefault true;
-
     git-hooks.hooks = {
-      deadnix.enable = mkDefault cfg.deadnix.enable;
-      flake-checker.enable = mkDefault cfg.flake-checker.enable;
-      nixfmt-rfc-style.enable = mkDefault cfg.nixfmt.enable;
-      statix.enable = mkDefault cfg.statix.enable;
+      deadnix = {
+        enable = mkOverrideDefault cfg.deadnix.enable;
+        package = mkOverrideDefault cfg.deadnix.package;
+      };
+      flake-checker = {
+        enable = mkOverrideDefault cfg.flake-checker.enable;
+        package = mkOverrideDefault cfg.flake-checker.package;
+      };
+      nixfmt-rfc-style = {
+        enable = mkOverrideDefault cfg.nixfmt.enable;
+        package = mkOverrideDefault cfg.nixfmt.package;
+      };
+      statix = {
+        enable = mkOverrideDefault cfg.statix.enable;
+        package = mkOverrideDefault cfg.statix.package;
+      };
     };
 
     treefmt.config.programs = {
-      deadnix.enable = mkDefault cfg.deadnix.enable;
-      nixfmt.enable = mkDefault cfg.nixfmt.enable;
-      statix.enable = mkDefault cfg.statix.enable;
+      deadnix = {
+        enable = mkOverrideDefault cfg.deadnix.enable;
+        package = mkOverrideDefault cfg.deadnix.package;
+      };
+      nixfmt = {
+        enable = mkOverrideDefault cfg.nixfmt.enable;
+        package = mkOverrideDefault cfg.nixfmt.package;
+      };
+      statix = {
+        enable = mkOverrideDefault cfg.statix.enable;
+        package = mkOverrideDefault cfg.statix.package;
+      };
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "nix"; } [
       cfg
+      cfg.lsp
+      cfg.cachix
       cfg.nixfmt
       cfg.flake-checker
       cfg.deadnix
       cfg.statix
       cfg.dix
-      config.languages.nix.lsp
     ];
   };
 }

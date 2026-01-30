@@ -8,6 +8,7 @@
 let
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkOption mkPackageOption;
+  inherit (lib.lists) optional;
   inherit (config.lib) mkOverrideDefault;
   inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
@@ -17,9 +18,9 @@ in
   options.knopki.nix = {
     enable = mkEnableOption "Enable nix support";
     package = mkOption {
-      type = lib.types.package;
-      default = pkgs.nix;
-      description = "The Nix package to use";
+      type = with lib.types; nullOr package;
+      default = null;
+      description = "The Nix package to install (if any)";
     };
 
     lsp = {
@@ -62,7 +63,6 @@ in
 
   config = mkIf cfg.enable {
     packages = packagesFromConfigs [
-      cfg
       cfg.lsp
       cfg.cachix
       cfg.nixfmt
@@ -70,7 +70,7 @@ in
       cfg.deadnix
       cfg.statix
       cfg.dix
-    ];
+    ] ++ optional (cfg.package != null) cfg.package;
 
     git-hooks.hooks = {
       deadnix = {
@@ -107,7 +107,6 @@ in
     };
 
     knopki.menu.commands = commandsFromConfigs { category = "nix"; } [
-      cfg
       cfg.lsp
       cfg.cachix
       cfg.nixfmt

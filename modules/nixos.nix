@@ -81,8 +81,12 @@ in
         cfg.nixos-anywhere
         cfg.nixos-build-vms
         cfg.nixos-rebuild
-        cfg.vulnix
       ]
+      ++ optional cfg.vulnix.enable {
+        category = "nixos";
+        name = "vulnix";
+        package = if cfg.vulnix.package == vulnix then pkgs.vulnix else cfg.vulnix.package;
+      }
       ++ optionals cfg.nixos-install-tools.enable (
         map
           (name: {

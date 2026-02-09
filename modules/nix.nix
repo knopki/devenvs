@@ -30,7 +30,7 @@ in
 
     nixfmt = {
       enable = mkEnableOption "Enable nixfmt";
-      package = mkPackageOption pkgs "nixfmt-rfc-style" { };
+      package = mkPackageOption pkgs "nixfmt" { };
     };
 
     flake-checker = {
@@ -62,15 +62,17 @@ in
   };
 
   config = mkIf cfg.enable {
-    packages = packagesFromConfigs [
-      cfg.lsp
-      cfg.cachix
-      cfg.nixfmt
-      cfg.flake-checker
-      cfg.deadnix
-      cfg.statix
-      cfg.dix
-    ] ++ optional (cfg.package != null) cfg.package;
+    packages =
+      packagesFromConfigs [
+        cfg.lsp
+        cfg.cachix
+        cfg.nixfmt
+        cfg.flake-checker
+        cfg.deadnix
+        cfg.statix
+        cfg.dix
+      ]
+      ++ optional (cfg.package != null) cfg.package;
 
     git-hooks.hooks = {
       deadnix = {
@@ -81,7 +83,7 @@ in
         enable = mkDefault cfg.flake-checker.enable;
         package = mkOverrideDefault cfg.flake-checker.package;
       };
-      nixfmt-rfc-style = {
+      nixfmt = {
         enable = mkDefault cfg.nixfmt.enable;
         package = mkOverrideDefault cfg.nixfmt.package;
       };

@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   inherit (builtins) attrValues;
   inherit (lib.modules) mkDefault mkOverride;

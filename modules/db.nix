@@ -9,8 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional optionals;
-  inherit (config.lib) mkOverrideDefault;
-  inherit (myLib) commandsFromConfigs packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.db;
 in

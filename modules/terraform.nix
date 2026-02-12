@@ -10,8 +10,7 @@ let
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
   inherit (lib.meta) getExe;
-  inherit (config.lib) mkOverrideDefault;
-  inherit (myLib) commandsFromConfigs packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.terraform;
 in

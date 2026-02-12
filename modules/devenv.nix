@@ -1,17 +1,17 @@
 {
   lib,
-  config,
   pkgs,
   ...
 }:
 let
   inherit (builtins) attrValues;
   inherit (lib.modules) mkDefault mkOverride;
-  inherit (config.lib) mkOverrideDefault;
   myModules = import ./modules-list.nix;
+  myLib = import ./lib.nix { inherit lib; };
+  inherit (myLib) mkOverrideDefault;
 in
 {
-  _module.args.myLib = import ./lib.nix { inherit lib; };
+  _module.args.myLib = myLib;
 
   imports = attrValues myModules;
 

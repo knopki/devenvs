@@ -8,8 +8,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (config.lib) mkOverrideDefault;
-  inherit (myLib) commandsFromConfigs packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.toml;
 in

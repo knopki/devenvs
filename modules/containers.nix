@@ -2,13 +2,14 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (config.lib) mkOverrideDefault;
   inherit (lib.lists) optional;
+  inherit (myLib) mkOverrideDefault;
 
   cfg = config.knopki.containers;
 in

@@ -62,11 +62,14 @@ configuration for a Nix-based project:
 
 Note that if you enable `treefmt`, you must explicitly add the `treefmt-nix`
 input to your `devenv.yaml` as per the
-[official documentation](https://devenv.sh/integrations/treefmt/):
+[official documentation](https://devenv.sh/integrations/treefmt/): If you enable
+`git-hooks`, you must explicitly add the `git-hooks` input.
 
 ```yaml
 # devenv.yaml
 inputs:
+  git-hooks:
+    url: github:cachix/git-hooks.nix
   treefmt-nix:
     url: github:numtide/treefmt-nix
     inputs:

@@ -7,7 +7,7 @@
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
-  inherit (lib.options) mkEnableOption mkPackageOption;
+  inherit (lib.options) mkEnableOption mkOption mkPackageOption;
   inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.shell;
@@ -40,6 +40,21 @@ in
     shfmt = {
       enable = mkEnableOption "Enable shfmt formatting";
       package = mkPackageOption pkgs "shfmt" { };
+      indent = mkOption {
+        type = with lib.types; nullOr int;
+        default = 2;
+        description = ''
+          Sets the number of spaces to be used in indentation. Uses tabs if set to
+          zero.
+        '';
+      };
+      simplify = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Enables the `-s` (`--simplify`) flag, which simplifies code where possible.
+        '';
+      };
     };
   };
 
@@ -60,6 +75,10 @@ in
       shfmt = {
         enable = mkDefault cfg.shfmt.enable;
         package = mkOverrideDefault cfg.shfmt.package;
+        settings = {
+          indent = mkOverrideDefault cfg.shfmt.indent;
+          simplify = mkOverrideDefault cfg.shfmt.simplify;
+        };
       };
     };
 
@@ -67,6 +86,8 @@ in
       shfmt = {
         enable = mkDefault cfg.shfmt.enable;
         package = mkOverrideDefault cfg.shfmt.package;
+        indent_size = mkOverrideDefault cfg.shfmt.indent;
+        simplify = mkOverrideDefault cfg.shfmt.simplify;
       };
     };
 

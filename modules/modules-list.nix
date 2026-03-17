@@ -1,8 +1,10 @@
 {
   containers = ./containers.nix;
+  css = ./css.nix;
   db = ./db.nix;
   git = ./git.nix;
   git-hooks = ./git-hooks.nix;
+  html = ./html.nix;
   json = ./json.nix;
   markdown = ./markdown.nix;
   menu = ./menu.nix;

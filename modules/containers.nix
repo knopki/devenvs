@@ -8,8 +8,8 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
-  inherit (myLib) mkOverrideDefault;
+  inherit (lib.lists) optional optionals;
+  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.containers;
 in
@@ -26,12 +26,34 @@ in
       enable = mkEnableOption "Enable lazydocker";
       package = mkPackageOption pkgs "lazydocker" { };
     };
+
+    docker-compose-format = {
+      enable = mkEnableOption "Enable docker compose formatting";
+    };
+
+    docker-compose-ls = {
+      enable = mkEnableOption "Enable docker compose language server";
+      package = mkPackageOption pkgs "docker-compose-language-service" { };
+    };
+
+    dockerfile-format = {
+      enable = mkEnableOption "Enable dockerfile formatting";
+    };
+
+    dockerfile-ls = {
+      enable = mkEnableOption "Enable dockerfile language server";
+      package = mkPackageOption pkgs "dockerfile-language-server" { };
+    };
   };
 
   config = mkIf cfg.enable {
-    packages =
-      optional cfg.hadolint.enable cfg.hadolint.package
-      ++ optional cfg.lazydocker.enable cfg.lazydocker.package;
+
+    packages = packagesFromConfigs [
+      cfg.hadolint
+      cfg.lazydocker
+      cfg.docker-compose-ls
+      cfg.dockerfile-ls
+    ];
 
     git-hooks.hooks = {
       hadolint = {
@@ -40,13 +62,30 @@ in
       };
     };
 
-    knopki.menu.commands = map (cmd: cmd // { category = "containers"; }) (
-      optional cfg.hadolint.enable {
-        inherit (cfg.hadolint) package;
-      }
-      ++ optional cfg.lazydocker.enable {
-        inherit (cfg.lazydocker) package;
-      }
-    );
+    treefmt.config.programs = {
+      dprint = {
+        enable = mkDefault (cfg.dockerfile-format.enable || cfg.docker-compose-format.enable);
+        includes =
+          optionals cfg.dockerfile-format.enable [
+            "Dockerfile"
+            "Containerfile"
+          ]
+          ++ optionals cfg.docker-compose-format.enable [
+            "(docker-)?compose\.(.*\.)?ya?ml"
+          ];
+        settings.plugins = pkgs.dprint-plugins.getPluginList (
+          ps:
+          optional cfg.dockerfile-format.enable ps.dprint-plugin-dockerfile
+          ++ optional cfg.docker-compose-format.enable ps.g-plane-pretty_yaml
+        );
+      };
+    };
+
+    knopki.menu.commands = commandsFromConfigs { category = "containers"; } [
+      cfg.hadolint
+      cfg.lazydocker
+      cfg.docker-compose-ls
+      cfg.dockerfile-ls
+    ];
   };
 }

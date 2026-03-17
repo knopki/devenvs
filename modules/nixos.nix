@@ -34,6 +34,11 @@ in
       package = mkPackageOption pkgs "nix-inspect" { };
     };
 
+    nix-update = {
+      enable = mkEnableOption "Enable nix-update tool";
+      package = mkPackageOption pkgs "nix-update" { };
+    };
+
     nixos-anywhere = {
       enable = mkEnableOption "Enable nixos-anywhere tool";
       package = mkPackageOption pkgs "nixos-anywhere" { };
@@ -67,6 +72,7 @@ in
       packagesFromConfigs [
         cfg.nh
         cfg.nix-inspect
+        cfg.nix-update
         cfg.nixos-anywhere
         cfg.nixos-build-vms
         cfg.nixos-rebuild
@@ -78,6 +84,7 @@ in
       commandsFromConfigs { category = "nixos"; } [
         cfg.nh
         cfg.nix-inspect
+        cfg.nix-update
         cfg.nixos-anywhere
         cfg.nixos-build-vms
         cfg.nixos-rebuild

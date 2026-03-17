@@ -21,8 +21,10 @@ in
     enable = mkOverride 999 false;
     package = mkOverrideDefault pkgs.prek;
     excludes = [
+      "devenv.lock"
       "^.devenv\..*/"
       "^.git/"
+      "package-lock.json"
     ];
   };
 
@@ -31,5 +33,6 @@ in
     ".devenv.*/*"
     ".direnv/*"
     ".git/*"
+    "package-lock.json"
   ];
 }

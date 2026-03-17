@@ -25,6 +25,7 @@ in
       "^.devenv\..*/"
       "^.git/"
       "package-lock.json"
+      ".pre-commit-config.yaml"
     ];
   };
 
@@ -34,5 +35,6 @@ in
     ".direnv/*"
     ".git/*"
     "package-lock.json"
+    ".pre-commit-config.yaml"
   ];
 }

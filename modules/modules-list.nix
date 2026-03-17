@@ -5,6 +5,7 @@
   git = ./git.nix;
   git-hooks = ./git-hooks.nix;
   html = ./html.nix;
+  javascript = ./javascript.nix;
   json = ./json.nix;
   markdown = ./markdown.nix;
   menu = ./menu.nix;
@@ -16,6 +17,7 @@
   terraform = ./terraform.nix;
   toml = ./toml.nix;
   treefmt = ./treefmt.nix;
+  typescript = ./typescript.nix;
   xml = ./xml.nix;
   yaml = ./yaml.nix;
 }

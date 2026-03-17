@@ -73,7 +73,7 @@ in
         package = mkOverrideDefault cfg.shellcheck.package;
       };
       shfmt = {
-        enable = mkDefault cfg.shfmt.enable;
+        enable = mkDefault (cfg.shfmt.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.shfmt.package;
         settings = {
           indent = mkOverrideDefault cfg.shfmt.indent;

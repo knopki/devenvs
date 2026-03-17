@@ -38,7 +38,9 @@ in
 
     git-hooks.hooks = {
       check-json.enable = mkDefault true;
-      denofmt.enable = mkDefault true;
+      denofmt.enable = mkDefault (
+        !config.git-hooks.hooks.treefmt.enable || !config.treefmt.config.programs.deno.enable
+      );
     };
 
     treefmt.config.programs = {

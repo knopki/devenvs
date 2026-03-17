@@ -75,7 +75,7 @@ in
 
     git-hooks.hooks = {
       deadnix = {
-        enable = mkDefault cfg.deadnix.enable;
+        enable = mkDefault (cfg.deadnix.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.deadnix.package;
       };
       flake-checker = {
@@ -83,11 +83,11 @@ in
         package = mkOverrideDefault cfg.flake-checker.package;
       };
       nixfmt = {
-        enable = mkDefault cfg.nixfmt.enable;
+        enable = mkDefault (cfg.nixfmt.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.nixfmt.package;
       };
       statix = {
-        enable = mkDefault cfg.statix.enable;
+        enable = mkDefault (cfg.statix.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.statix.package;
       };
     };

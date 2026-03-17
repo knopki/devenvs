@@ -28,7 +28,7 @@ in
     git-hooks.hooks = {
       check-toml.enable = mkDefault true;
       taplo = {
-        enable = mkDefault cfg.taplo.enable;
+        enable = mkDefault (cfg.taplo.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.taplo.package;
       };
     };

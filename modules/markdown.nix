@@ -51,7 +51,10 @@ in
         enable = mkDefault cfg.lychee.enable;
         package = mkOverrideDefault cfg.lychee.package;
       };
-      denofmt.enable = mkDefault true;
+      denofmt.enable = mkDefault (
+        !config.git-hooks.hooks.treefmt.enable || !config.treefmt.config.programs.deno.enable
+      );
+
       markdownlint = {
         enable = mkDefault cfg.markdownlint.enable;
         package = mkOverrideDefault cfg.markdownlint.package;

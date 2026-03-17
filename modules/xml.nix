@@ -37,7 +37,7 @@ in
     git-hooks.hooks = {
       check-xml.enable = mkDefault true;
       xmllint = {
-        enable = mkDefault cfg.xmllint.enable;
+        enable = mkDefault (cfg.xmllint.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.xmllint.package;
         name = "xmllint";
         entry = "xmllint";

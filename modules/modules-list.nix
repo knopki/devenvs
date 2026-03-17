@@ -2,6 +2,7 @@
   containers = ./containers.nix;
   db = ./db.nix;
   git = ./git.nix;
+  git-hooks = ./git-hooks.nix;
   json = ./json.nix;
   markdown = ./markdown.nix;
   menu = ./menu.nix;
@@ -12,6 +13,7 @@
   shell = ./shell.nix;
   terraform = ./terraform.nix;
   toml = ./toml.nix;
+  treefmt = ./treefmt.nix;
   xml = ./xml.nix;
   yaml = ./yaml.nix;
 }

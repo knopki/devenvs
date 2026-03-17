@@ -100,7 +100,7 @@ in
           '';
         };
         terraform-format = {
-          enable = mkDefault true;
+          enable = mkDefault (!config.treefmt.enable);
           package = mkOverrideDefault cfg.package;
         };
         terraform-validate = {
@@ -108,7 +108,7 @@ in
           package = mkOverrideDefault cfg.package;
         };
         terramate-format = {
-          enable = mkDefault cfg.terramate.enable;
+          enable = mkDefault (cfg.terramate.enable && !config.treefmt.enable);
           name = "terramate-format";
           description = "Format HCL files";
           package = mkOverrideDefault cfg.terramate.package;

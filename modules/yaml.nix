@@ -32,7 +32,7 @@ in
       check-yaml.enable = mkDefault true;
       denofmt.enable = mkDefault true;
       yamllint = {
-        enable = mkDefault cfg.yamllint.enable;
+        enable = mkDefault (cfg.yamllint.enable && !config.treefmt.enable);
         package = mkOverrideDefault cfg.yamllint.package;
         settings.configuration = mkDefault ''
           rules:

@@ -1,15 +1,11 @@
 {
   config,
   lib,
-  pkgs,
-  myLib,
   ...
 }:
 let
   inherit (lib.modules) mkDefault mkIf;
-  inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.meta) getExe;
-  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
+  inherit (lib.options) mkEnableOption;
 
   cfg = config.knopki.css;
 in
@@ -17,44 +13,22 @@ in
   options.knopki.css = {
     enable = mkEnableOption "Enable css support";
 
-    biome = {
-      enable = mkEnableOption "Enable biome";
-      package = mkPackageOption pkgs "biome" { };
-    };
+    biome.enable = mkEnableOption "Enable biome";
   };
 
   config = mkIf cfg.enable {
-    packages = packagesFromConfigs [
-      cfg.biome
-    ];
-
     git-hooks.hooks = {
-      biome-css = {
-        enable = mkDefault cfg.biome.enable;
-        name = "Biome CSS Lint";
-        package = mkOverrideDefault cfg.biome.package;
-        entry = mkDefault ''
-          ${getExe cfg.biome.package} check --write --files-ignore-unknown=true --no-errors-on-unmatched
-        '';
-        files = mkDefault "\\.css$";
+      biome = mkIf cfg.biome.enable {
+        enable = mkDefault true;
+        types_or = mkDefault [ "css" ];
       };
     };
 
     treefmt.config = {
-      settings.formatter."biome-css" = mkIf cfg.biome.enable {
-        command = getExe cfg.biome.package;
-        options = [
-          "format"
-          "--write"
-          "--files-ignore-unknown=true"
-          "--no-errors-on-unmatched"
-        ];
-        includes = [ "*.css" ];
+      programs.biome = mkIf cfg.biome.enable {
+        enable = mkDefault cfg.biome.enable;
+        includes = mkDefault [ "*.css" ];
       };
     };
-
-    knopki.menu.commands = commandsFromConfigs { category = "css"; } [
-      cfg.biome
-    ];
   };
 }

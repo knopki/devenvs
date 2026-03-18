@@ -22,6 +22,8 @@ _: {
     };
     yaml = {
       enable = true;
+      format.enable = true;
+      lsp.enable = true;
       yamllint.enable = true;
     };
   };

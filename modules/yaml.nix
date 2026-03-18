@@ -8,7 +8,7 @@
 let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
-  inherit (lib.lists) optional;
+  inherit (lib.lists) optional optionals;
   inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
 
   cfg = config.knopki.yaml;
@@ -16,6 +16,13 @@ in
 {
   options.knopki.yaml = {
     enable = mkEnableOption "Enable yaml support";
+
+    format.enable = mkEnableOption "Enable yaml formatting";
+
+    lsp = {
+      enable = mkEnableOption "Enable yaml LS";
+      package = mkPackageOption pkgs "yaml-language-server" { };
+    };
 
     yamllint = {
       enable = mkEnableOption "Enable yamllint";
@@ -25,16 +32,14 @@ in
 
   config = mkIf cfg.enable {
     packages = packagesFromConfigs [
+      cfg.lsp
       cfg.yamllint
     ];
 
     git-hooks.hooks = {
       check-yaml.enable = mkDefault true;
-      denofmt.enable = mkDefault (
-        !config.git-hooks.hooks.treefmt.enable || !config.treefmt.config.programs.deno.enable
-      );
       yamllint = {
-        enable = mkDefault (cfg.yamllint.enable && !config.treefmt.enable);
+        enable = mkDefault cfg.yamllint.enable;
         package = mkOverrideDefault cfg.yamllint.package;
         settings.configuration = mkDefault ''
           rules:
@@ -45,17 +50,21 @@ in
     };
 
     treefmt.config.programs = {
-      deno.enable = mkDefault true;
+      dprint = {
+        enable = mkDefault cfg.format.enable;
+        includes = optionals cfg.format.enable [
+          "*.yml"
+          "*.yaml"
+        ];
+        settings.plugins = pkgs.dprint-plugins.getPluginList (
+          ps: optional cfg.format.enable ps.g-plane-pretty_yaml
+        );
+      };
     };
 
-    knopki.menu.commands =
-      optional (config.git-hooks.enable && config.git-hooks.hooks.denofmt.enable) {
-        inherit (config.git-hooks.hooks.denofmt) package;
-        name = "deno fmt";
-        category = "yaml";
-      }
-      ++ commandsFromConfigs { category = "yaml"; } [
-        cfg.yamllint
-      ];
+    knopki.menu.commands = commandsFromConfigs { category = "yaml"; } [
+      cfg.lsp
+      cfg.yamllint
+    ];
   };
 }

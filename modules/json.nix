@@ -9,8 +9,7 @@ let
   inherit (lib.modules) mkDefault mkIf;
   inherit (lib.options) mkEnableOption mkPackageOption;
   inherit (lib.lists) optional;
-  inherit (lib.meta) getExe;
-  inherit (myLib) commandsFromConfigs mkOverrideDefault packagesFromConfigs;
+  inherit (myLib) commandsFromConfigs packagesFromConfigs;
 
   cfg = config.knopki.json;
 in
@@ -28,10 +27,7 @@ in
       package = mkPackageOption pkgs "fx" { };
     };
 
-    biome = {
-      enable = mkEnableOption "Enable biome";
-      package = mkPackageOption pkgs "biome" { };
-    };
+    biome.enable = mkEnableOption "Enable biome";
   };
 
   config = mkIf cfg.enable {
@@ -39,7 +35,6 @@ in
       packagesFromConfigs [
         cfg.jq
         cfg.fx
-        cfg.biome
       ]
       ++ optional (
         config.treefmt.enable && config.treefmt.config.programs.formatjson5.enable
@@ -47,28 +42,20 @@ in
 
     git-hooks.hooks = {
       check-json.enable = mkDefault (!cfg.biome.enable);
-      biome-json = {
-        enable = mkDefault cfg.biome.enable;
-        name = "Biome JSON Lint";
-        package = mkOverrideDefault cfg.biome.package;
-        entry = mkDefault ''
-          ${getExe cfg.biome.package} check --write --files-ignore-unknown=true --no-errors-on-unmatched
-        '';
-        files = mkDefault "\\.json(c|5)?$";
+      biome = mkIf cfg.biome.enable {
+        enable = mkDefault true;
+        types_or = mkDefault [
+          "json"
+          "json5"
+        ];
       };
     };
 
-    treefmt.config = {
-      programs.formatjson5.enable = mkDefault (!cfg.biome.enable);
-      settings.formatter."biome-json" = mkIf cfg.biome.enable {
-        command = getExe cfg.biome.package;
-        options = [
-          "format"
-          "--write"
-          "--files-ignore-unknown=true"
-          "--no-errors-on-unmatched"
-        ];
-        includes = [
+    treefmt.config.programs = {
+      formatjson5.enable = mkDefault (!cfg.biome.enable);
+      biome = mkIf cfg.biome.enable {
+        enable = mkDefault cfg.biome.enable;
+        includes = mkDefault [
           "*.json"
           "*.jsonc"
           "*.json5"
@@ -76,20 +63,9 @@ in
       };
     };
 
-    knopki.menu.commands =
-      optional config.git-hooks.hooks.denofmt.enable {
-        inherit (config.git-hooks.hooks.denofmt) package;
-        name = "deno fmt";
-        category = "json";
-      }
-      ++ optional config.treefmt.enable {
-        inherit (config.treefmt.config.programs.formatjson5) package;
-        category = "json";
-      }
-      ++ commandsFromConfigs { category = "json"; } [
-        cfg.jq
-        cfg.fx
-        cfg.biome
-      ];
+    knopki.menu.commands = commandsFromConfigs { category = "json"; } [
+      cfg.jq
+      cfg.fx
+    ];
   };
 }

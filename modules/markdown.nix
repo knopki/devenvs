@@ -17,6 +17,8 @@ in
   options.knopki.markdown = {
     enable = mkEnableOption "Enable markdown support";
 
+    format.enable = mkEnableOption "Enable markdown formatting";
+
     glow = {
       enable = mkEnableOption "Enable glow viewer";
       package = mkPackageOption pkgs "glow" { };
@@ -51,10 +53,6 @@ in
         enable = mkDefault cfg.lychee.enable;
         package = mkOverrideDefault cfg.lychee.package;
       };
-      denofmt.enable = mkDefault (
-        !config.git-hooks.hooks.treefmt.enable || !config.treefmt.config.programs.deno.enable
-      );
-
       markdownlint = {
         enable = mkDefault cfg.markdownlint.enable;
         package = mkOverrideDefault cfg.markdownlint.package;
@@ -67,20 +65,20 @@ in
     };
 
     treefmt.config.programs = {
-      deno.enable = mkDefault true;
+      dprint = {
+        enable = mkDefault cfg.format.enable;
+        includes = optional cfg.format.enable "*.md";
+        settings.plugins = pkgs.dprint-plugins.getPluginList (
+          ps: optional cfg.format.enable ps.dprint-plugin-markdown
+        );
+      };
     };
 
-    knopki.menu.commands =
-      commandsFromConfigs { category = "markdown"; } [
-        cfg.glow
-        cfg.lychee
-        cfg.marksman
-        cfg.markdownlint
-      ]
-      ++ optional config.git-hooks.hooks.denofmt.enable {
-        inherit (config.git-hooks.hooks.denofmt) package;
-        name = "deno fmt";
-        category = "markdown";
-      };
+    knopki.menu.commands = commandsFromConfigs { category = "markdown"; } [
+      cfg.glow
+      cfg.lychee
+      cfg.marksman
+      cfg.markdownlint
+    ];
   };
 }

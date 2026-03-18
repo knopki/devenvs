@@ -6,9 +6,11 @@
   ...
 }:
 let
-  inherit (builtins) attrValues;
+  inherit (builtins) attrValues toJSON;
   inherit (lib.modules) mkIf mkOverride;
+  inherit (lib.strings) optionalString;
   inherit (myLib) mkOverrideDefault;
+  writeJSON = name: obj: toString (pkgs.writeText name (toJSON obj));
 in
 {
 
@@ -23,12 +25,20 @@ in
       "package-lock.json"
       "uv.lock"
     ];
-    hooks.treefmt = {
-      enable = mkOverrideDefault config.treefmt.enable;
+    hooks = {
+      biome = {
+        settings.configPath = optionalString (
+          config.treefmt.enable && config.treefmt.config.programs.biome.enable
+        ) (writeJSON "biome.json" config.treefmt.config.programs.biome.settings);
+      };
 
-      # if treefmt is enabled use preconfigured treefmt and formatters
-      packageOverrides.treefmt = mkIf config.treefmt.enable config.treefmt.config.build.wrapper;
-      settings.formatters = mkIf config.treefmt.enable (attrValues config.treefmt.config.build.programs);
+      treefmt = {
+        enable = mkOverrideDefault config.treefmt.enable;
+
+        # if treefmt is enabled use preconfigured treefmt and formatters
+        packageOverrides.treefmt = mkIf config.treefmt.enable config.treefmt.config.build.wrapper;
+        settings.formatters = mkIf config.treefmt.enable (attrValues config.treefmt.config.build.programs);
+      };
     };
   };
 }

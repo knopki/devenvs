@@ -34,6 +34,13 @@ in
     treefmt.config.programs = {
       biome = mkIf cfg.biome.enable {
         enable = mkDefault cfg.biome.enable;
+        settings = {
+          typescript = {
+            formatter = {
+              indentStyle = mkDefault "space";
+            };
+          };
+        };
         includes = mkDefault [
           "*.mts"
           "*.ts"

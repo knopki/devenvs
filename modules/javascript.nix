@@ -33,6 +33,13 @@ in
     treefmt.config.programs = {
       biome = mkIf cfg.biome.enable {
         enable = mkDefault cfg.biome.enable;
+        settings = {
+          javascript = {
+            formatter = {
+              indentStyle = mkDefault "space";
+            };
+          };
+        };
         includes = mkDefault [
           "*.js"
           "*.jsx"

@@ -31,6 +31,13 @@ in
     treefmt.config.programs = {
       biome = mkIf cfg.biome.enable {
         enable = mkDefault cfg.biome.enable;
+        settings = {
+          html = {
+            formatter = {
+              indentStyle = mkDefault "space";
+            };
+          };
+        };
         includes = mkDefault [
           "*.html"
           "*.htm"

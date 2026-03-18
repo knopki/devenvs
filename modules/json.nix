@@ -55,6 +55,13 @@ in
       formatjson5.enable = mkDefault (!cfg.biome.enable);
       biome = mkIf cfg.biome.enable {
         enable = mkDefault cfg.biome.enable;
+        settings = {
+          json = {
+            formatter = {
+              indentStyle = mkDefault "space";
+            };
+          };
+        };
         includes = mkDefault [
           "*.json"
           "*.jsonc"

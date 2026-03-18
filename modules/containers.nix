@@ -71,7 +71,10 @@ in
             "Containerfile"
           ]
           ++ optionals cfg.docker-compose-format.enable [
-            "(docker-)?compose\.(.*\.)?ya?ml"
+            "compose.yaml"
+            "compose.yml"
+            "docker-compose.yaml"
+            "docker-compose.yml"
           ];
         settings.plugins = pkgs.dprint-plugins.getPluginList (
           ps:

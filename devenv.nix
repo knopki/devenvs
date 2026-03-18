@@ -14,6 +14,7 @@ _: {
     };
     markdown = {
       enable = true;
+      format.enable = true;
       glow.enable = true;
       lychee.enable = true;
       marksman.enable = true;

@@ -65,7 +65,7 @@ in
     };
 
     treefmt.config.programs = {
-      dprint = {
+      dprint = mkIf cfg.format.enable {
         enable = mkDefault cfg.format.enable;
         includes = optional cfg.format.enable "*.md";
         settings.plugins = pkgs.dprint-plugins.getPluginList (

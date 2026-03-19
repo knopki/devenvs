@@ -50,7 +50,7 @@ in
     };
 
     treefmt.config.programs = {
-      dprint = {
+      dprint = mkIf cfg.format.enable {
         enable = mkDefault cfg.format.enable;
         includes = optionals cfg.format.enable [
           "*.yml"

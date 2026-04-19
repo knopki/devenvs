@@ -36,7 +36,7 @@ in
 
     markdownlint = {
       enable = mkEnableOption "Enable markdownlint";
-      package = mkPackageOption pkgs.nodePackages "markdownlint-cli" { };
+      package = mkPackageOption pkgs "markdownlint-cli" { };
     };
   };
 
